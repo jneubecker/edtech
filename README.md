@@ -1,5 +1,5 @@
 ## How to Run
-1. Open a cmd prompt in this location
+1. Open a cmd prompt in /invenio
 2. \> mvn package
 3. \> docker build --file=Dockerfile.server --tag=invenio:latest --rm=true
 4. \> docker run --name=invenio --publish=8080:8080 invenio:latest
