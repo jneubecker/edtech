@@ -2,16 +2,15 @@ version: "3.0"
 services:
   app:
     container_name: app
-    restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-  mongo:
-    container_name: mongo
+      - "7777:7777"
+    depends_on:
+      - "mongodb"
+  mongodb:
+    container_name: mongodb
     image: mongo
-    volumes:
-      - ./data:/data/db
     ports:
       - "27017:27017"

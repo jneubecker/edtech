@@ -1,0 +1,4 @@
+.idea/*
+invenio-api/target/*
+invenio-api/data/*
+invenio/node_modules/*
