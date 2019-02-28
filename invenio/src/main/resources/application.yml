@@ -1,7 +1,0 @@
-server:
-  servlet:
-    context-path: /invenio
-spring:
-  data:
-    mongodb:
-      uri: mongodb://test:test@mongodb:27017
