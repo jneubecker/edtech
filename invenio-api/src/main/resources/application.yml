@@ -2,7 +2,6 @@ server:
   port: 7777
   servlet:
     context-path: /invenio
-
 spring:
   data:
     mongodb:
