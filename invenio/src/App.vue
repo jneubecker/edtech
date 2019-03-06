@@ -46,8 +46,7 @@ export default {
       FB.getLoginStatus(function(response) {
          if (response.status === 'connected') {
            FB.api('/me', function(response) {
-             // TODO put userId in a cookie
-              document.userId = response.id;
+             // TODO make this more secure
               document.cookie = "userId=" + response.id + ";port=7777;";
               self.isLoggedIn = true;
             });   
