@@ -7,13 +7,14 @@ Both Java and Maven are only required to build the API. It's possible in the fut
 - Docker
 
 ## How to Run
-- Open a cmd prompt in the project root
+- Open a cmd prompt in ./invenio-api
 - \> mvn package -DskipTests
   - This will build the API and output a jar for docker to pick up
+- Open a cmd prompt in the project root
 - \> docker-compose up --build
   - This will build and start the container for the application
     - A container for MongoDB
-    - A container for the api (which is a Spring Boot application)
+    - A container for the API (which is a Spring Boot application)
     - A container for the UI (which is a Vue.js application)
   - This will take a while the first time as the base images are downloaded and built
 - Navigate to http://localhost:8080/invenio
