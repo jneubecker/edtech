@@ -23,22 +23,13 @@ export default {
     createGroup: function() {
       const self = this;
       const groupName = document.getElementById("group-name").value;
-      const data = { 
-          name: groupName 
-      };
-
       let groupId = null;
 
-      axios.put('http://localhost:7777/invenio/group', data).then(function(response) {
+      axios.put(`http://localhost:7777/invenio/group/${groupName}`, {}, {withCredentials: true}).then(function(response) {
         groupId = response.data.id;
 
         if (groupId) {
-          const joinData = { 
-              groupId: groupId,
-              userId: document.userId
-          };
-
-          axios.put('http://localhost:7777/invenio/group/join', joinData);
+          axios.put(`http://localhost:7777/invenio/group/member/${groupId}`, {}, {withCredentials: true});
         }
 
         self.$emit('group-created', response.data);

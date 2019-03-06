@@ -48,6 +48,7 @@ export default {
            FB.api('/me', function(response) {
              // TODO put userId in a cookie
               document.userId = response.id;
+              document.cookie = "userId=" + response.id + ";port=7777;";
               self.isLoggedIn = true;
             });   
          }

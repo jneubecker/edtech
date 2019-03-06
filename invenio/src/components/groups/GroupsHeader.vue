@@ -31,7 +31,7 @@ export default {
         this.$emit('group-created', group);
       },
       showJoinGroup: function() {
-        axios.get('http://localhost:7777/invenio/group')
+        axios.get('http://localhost:7777/invenio/group/all', {withCredentials: true})
           .then(response => {
             this.groups = response.data;
             this.isJoinGroupVisible = true;

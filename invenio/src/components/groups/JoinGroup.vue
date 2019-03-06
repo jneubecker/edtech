@@ -25,14 +25,11 @@ export default {
   methods: {
     joinGroup: function(event) {
       const self = this;
-      const data = { 
-          groupId: event.target.dataset.id,
-          userId: document.userId
-      };
+      const groupId = event.target.dataset.id;
 
-      axios.put('http://localhost:7777/invenio/group/join', data).then(function() {
+      axios.put(`http://localhost:7777/invenio/group/member/${groupId}`, {}, {withCredentials: true}).then(function() {
         self.$emit('group-joined', {
-            id: event.target.dataset.id,
+            id: groupId,
             name: event.target.dataset.name
         });
       });      

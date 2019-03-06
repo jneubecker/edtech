@@ -20,12 +20,7 @@ export default {
       var self = this;
       var groupId = event.target.dataset.id;
 
-      const data = { 
-        groupId: groupId,
-        userId: document.userId
-      };
-
-      axios.post('http://localhost:7777/invenio/group/leave', data).then(function() {
+      axios.delete(`http://localhost:7777/invenio/group/member/${groupId}`, {withCredentials: true}).then(function() {
         self.groups.splice(self.groups.findIndex(function(i){
           return i.id === groupId;
         }), 1);

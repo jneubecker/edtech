@@ -32,7 +32,7 @@ export default {
   },
   mounted () {
     axios
-      .get('http://localhost:7777/invenio/group/' + document.userId)
+      .get('http://localhost:7777/invenio/group', {withCredentials: true})
       .then(response => (this.groups = response.data));
   }
 }
