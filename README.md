@@ -1,4 +1,4 @@
-## Prerequisites
+## Dependencies
 - Java
 - Maven
 
