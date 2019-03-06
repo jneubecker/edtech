@@ -1,6 +1,6 @@
 <template>
   <div id="groups-container">
-    <GroupsHeader v-on:group-created="handleGroupCreate"/>
+    <GroupsHeader v-on:group-created="handleGroupCreate" v-on:group-joined="handleGroupJoined"/>
     <GroupList v-bind:groups="groups"/>
   </div>
 </template>
@@ -25,16 +25,21 @@ export default {
   methods: {
     handleGroupCreate: function(group) {
       this.groups.push(group);
+    },
+    handleGroupJoined: function(group) {
+      this.groups.push(group);
     }
   },
   mounted () {
     axios
-      .get('http://localhost:7777/invenio/group')
+      .get('http://localhost:7777/invenio/group/' + document.userId)
       .then(response => (this.groups = response.data));
   }
 }
 </script>
 
 <style scoped>
-
+#groups-container  {
+  width: 100%;
+}
 </style>

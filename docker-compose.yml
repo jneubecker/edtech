@@ -1,0 +1,29 @@
+version: "3.0"
+services:
+  interface:
+    container_name: interface
+    build:
+      context: ./invenio
+      dockerfile: interface.Dockerfile
+    volumes:
+      - ./invenio:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "app"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+  app:
+    container_name: app
+    build:
+      context: ./invenio-api
+      dockerfile: api.Dockerfile
+    ports:
+      - "7777:7777"
+    depends_on:
+      - "mongodb"
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"

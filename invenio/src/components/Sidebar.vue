@@ -19,6 +19,7 @@ export default {
   .sidebar {
     padding: 15px;
     height: 100%;
-    background-color: darkslategray;
+    background-color: var(--main-dark-color);
+    width: 250px;
   }
 </style>
