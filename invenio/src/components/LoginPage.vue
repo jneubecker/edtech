@@ -1,6 +1,10 @@
 <template>
   <div class="login">
-     <button class="btn btn-primary" v-on:click="login">Login</button>
+    <div class="overlay">
+      <div class="dialog">
+        <button class="login-button btn btn-primary" v-on:click="login">Login With Facebook</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -21,5 +25,10 @@ export default {
 </script>
 
 <style scoped>
-
+.dialog {
+  height: 250px;
+  text-align:center;
+  line-height: 250px;
+  padding: 0px;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="sidebar d-inline-flex">
-    <Groups/>
+  <div class="sidebar col">
+    <Groups v-on:group-selected="$emit('group-selected', $event)"/>
   </div>
 </template>
 
@@ -17,9 +17,8 @@ export default {
 
 <style scoped>
   .sidebar {
-    padding: 15px;
     height: 100%;
     background-color: var(--main-dark-color);
-    width: 250px;
+    max-width: 250px;
   }
 </style>

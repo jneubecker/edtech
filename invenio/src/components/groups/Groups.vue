@@ -1,7 +1,7 @@
 <template>
   <div id="groups-container">
-    <GroupsHeader v-on:group-created="handleGroupCreate" v-on:group-joined="handleGroupJoined"/>
-    <GroupList v-bind:groups="groups"/>
+    <GroupsHeader class="groups-header" v-on:group-created="handleGroupCreate" v-on:group-joined="handleGroupJoined"/>
+    <GroupList v-on:group-selected="$emit('group-selected', $event)" v-bind:groups="groups"/>
   </div>
 </template>
 
@@ -41,5 +41,8 @@ export default {
 <style scoped>
 #groups-container  {
   width: 100%;
+}
+.groups-header {
+  padding: 15px 15px 5px 15px;
 }
 </style>

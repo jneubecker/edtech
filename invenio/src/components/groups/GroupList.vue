@@ -1,9 +1,11 @@
 <template>
   <div class="group-list">
     <ul id="group-list" class="list-unstyled">
-      <li class="group-list-element" v-bind:key="group.id" v-for="group in groups">
-        <span class="group-list-group">{{ group.name }}</span>
-        <i :data-id="group.id" v-on:click="leaveGroup" class="fas fa-minus-circle pull-right leave-group clickable"></i>
+      <li v-bind:key="group.id" v-for="group in groups">
+        <div class="group-list-element" :data-id="group.id" :data-name="group.name" v-on:click="$emit('group-selected', $event)">
+          {{ group.name }}
+          <i :data-id="group.id" v-on:click="leaveGroup" class="fas fa-minus-circle pull-right leave-group clickable"></i>
+        </div>
       </li>
     </ul>
   </div>
@@ -32,11 +34,11 @@ export default {
 
 <style scoped>
 .group-list-element {
-  height: 24px;
-  line-height: 24px;
+  padding: 5px 15px 0px 15px;
+  cursor: pointer;
 }
-.leave-group {
-  line-height: 24px;
+.group-list-element:hover {
+  background-color: var(--accent-color);
 }
 .group-list-group {
   margin-right: 10px;

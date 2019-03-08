@@ -1,24 +1,39 @@
 <template>
   <div id="app">
-    <Sidebar v-if="this.isLoggedIn"/>
+    <div class="container-fluid h-100 p-0" v-if="this.isLoggedIn">
+      <div class="row h-100">
+        <Sidebar v-on:group-selected="handleGroupSelected"/>
+        <div class="col">
+          <Header v-bind:selected-group="selectedGroup" v-on:logout="logout"/>
+          <ContentFeed/>
+          <ContentInput/>
+        </div>
+      </div>
+    </div>
     <LoginPage v-if="!this.isLoggedIn" v-on:logged-in="setLoggedIn"/>
-    <button class="btn btn-primary" v-if="this.isLoggedIn" v-on:click="logout">Log Out</button>
   </div>
 </template>
 
 <script>
 import Sidebar from './components/Sidebar.vue'
+import Header from './components/Header.vue'
 import LoginPage from './components/LoginPage.vue'
+import ContentFeed from './components/ContentFeed.vue'
+import ContentInput from './components/ContentInput.vue'
 
 export default {
   name: 'app',
   components: {
     Sidebar,
-    LoginPage
+    LoginPage,
+    Header,
+    ContentInput,
+    ContentFeed
   },
   data: function () {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      selectedGroup: ""
     }
   },
   methods: {
@@ -28,6 +43,10 @@ export default {
     logout: function() {
       FB.logout();
       this.isLoggedIn = false;
+    },
+    handleGroupSelected: function($event) {
+      console.log($event.target);
+      this.selectedGroup = $event.target.dataset.name;
     }
   },
   beforeCreate() {
@@ -90,6 +109,7 @@ h2 {
   -moz-osx-font-smoothing: grayscale;
   color: var(--main-light-color);
   height: 100%;
+  box-sizing: border-box;
 }
 .clickable {
   cursor: pointer;
@@ -134,6 +154,7 @@ h2 {
 .btn {
   background-color: var(--accent-color);
   border-color: var(--accent-color);
+  white-space: nowrap;
 }
 .btn-primary:hover {
   background-color: var(--secondary-text-color);
@@ -141,5 +162,14 @@ h2 {
 }
 .list-header {
   color: var(--secondary-color);
+}
+.row {
+  margin: 0px;
+}
+.col {
+  padding: 0px;
+}
+textarea {
+  resize: none;
 }
 </style>
