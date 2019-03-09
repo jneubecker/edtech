@@ -35,8 +35,7 @@ public class GroupController {
 
     @PutMapping(value = "/group/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Group saveGroup(@PathVariable(value = "name") String name) {
-        Group group = groupRepository.save(new Group(name));
-        return group;
+        return groupRepository.save(new Group(name));
     }
 
     @PutMapping(value = "/group/member/{id}")

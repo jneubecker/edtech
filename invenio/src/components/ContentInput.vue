@@ -2,9 +2,9 @@
   <div class="footer row text-center">
     <div class="col">
       <div class="input-group">
-        <textarea class="form-control content-input"></textarea>
+        <textarea class="form-control content-input" v-model="content"></textarea>
         <div class="input-group-append">
-          <span class="post-button input-group-text fas fa-plus"></span>
+          <span class="post-button input-group-text fas fa-plus" v-on:click="handlePost"></span>
         </div>
       </div>
     </div>
@@ -15,12 +15,23 @@
 
 export default {
   name: 'ContentInput',
+  data: function () {
+    return {
+      content: ""
+    }
+  },
+  methods: {
+    handlePost: function() {
+      this.$emit('post', this.content);
+      this.content = "";
+    }
+  }
 }
 </script>
 
 <style scoped>
 .footer {
-    height: 250px;
+  height: 250px;
 }
 .content-input {
   height: 150px;
@@ -32,6 +43,7 @@ export default {
   cursor: pointer;
   background-color: var(--main-dark-color);
   color: var(--main-light-color);
+  border: solid 1px var(--main-dark-color);
 }
 .post-button:hover {
   background-color: var(--accent-color);
@@ -39,15 +51,16 @@ export default {
 .input-group {
   padding-left: 100px;
   padding-right: 100px;
+  margin-top: 30px;
 }
 textarea {
-  border: none;
   overflow: auto;
   outline: none;
   box-shadow: none;
+  border: solid 1px var(--main-dark-color);
 }
 textarea:focus {
-  border: none;
+  border: solid 1px var(--main-dark-color);
   overflow: auto;
   outline: none;
   box-shadow: none;

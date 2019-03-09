@@ -2,11 +2,11 @@
   <div id="app">
     <div class="container-fluid h-100 p-0" v-if="this.isLoggedIn">
       <div class="row h-100">
-        <Sidebar v-on:group-selected="handleGroupSelected"/>
+        <Sidebar v-on:group-selected="handleGroupSelected" v-on:leave-group="handleLeaveGroup"/>
         <div class="col">
-          <Header v-bind:selected-group="selectedGroup" v-on:logout="logout"/>
-          <ContentFeed/>
-          <ContentInput/>
+          <Header v-bind:selected-group="selectedGroup.name" v-on:logout="logout"/>
+          <ContentFeed v-bind:content="content"/>
+          <ContentInput v-on:post="post"/>
         </div>
       </div>
     </div>
@@ -20,6 +20,7 @@ import Header from './components/Header.vue'
 import LoginPage from './components/LoginPage.vue'
 import ContentFeed from './components/ContentFeed.vue'
 import ContentInput from './components/ContentInput.vue'
+import axios from 'axios';
 
 export default {
   name: 'app',
@@ -33,7 +34,11 @@ export default {
   data: function () {
     return {
       isLoggedIn: false,
-      selectedGroup: ""
+      selectedGroup: {
+        name: "",
+        id: ""
+      },
+      content: []
     }
   },
   methods: {
@@ -45,8 +50,36 @@ export default {
       this.isLoggedIn = false;
     },
     handleGroupSelected: function($event) {
-      console.log($event.target);
-      this.selectedGroup = $event.target.dataset.name;
+      this.selectedGroup = $event.target.dataset;
+
+      axios.get(`http://localhost:7777/invenio/group/post/${this.selectedGroup.id}`, {withCredentials: true})
+        .then(response => (this.content = response.data));
+    },
+    post: function(content) {
+      if (content.trim() && this.selectedGroup.id) {
+        const self = this;
+        const data = {
+          content: marked(content, { sanitize: true })
+        }
+
+        axios.post(`http://localhost:7777/invenio/group/post/${self.selectedGroup.id}`, data, {withCredentials: true}).then(function(response) {
+          self.content.push(response.data);
+        }); 
+      }
+    },
+    handleLeaveGroup: function() {
+      var self = this;
+
+      if (self.selectedGroup.id === event.target.dataset.id) {
+        self.content = [];
+
+        self.selectedGroup = {
+          name: "",
+          id: ""
+        }
+      }
+
+      event.stopPropagation();
     }
   },
   beforeCreate() {

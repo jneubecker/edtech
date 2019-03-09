@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar col">
-    <Groups v-on:group-selected="$emit('group-selected', $event)"/>
+    <Groups v-on:leave-group="$emit('leave-group')" v-on:group-selected="$emit('group-selected', $event)"/>
   </div>
 </template>
 

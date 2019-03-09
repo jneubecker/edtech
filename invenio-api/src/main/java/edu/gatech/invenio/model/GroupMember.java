@@ -5,7 +5,7 @@ public class GroupMember {
     private String groupId;
 
     public GroupMember() {
-        
+
     }
 
     public String getUserId() {

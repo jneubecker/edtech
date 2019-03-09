@@ -27,6 +27,8 @@ export default {
           return i.id === groupId;
         }), 1);
       });      
+
+      this.$emit("leave-group")
     }
   }
 }
