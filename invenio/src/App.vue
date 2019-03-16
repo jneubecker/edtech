@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container-fluid h-100 p-0" v-if="this.isLoggedIn">
       <div class="row h-100">
-        <Sidebar v-on:group-selected="handleGroupSelected" v-on:leave-group="handleLeaveGroup"/>
+        <Sidebar v-bind:userName="userName" v-bind:isLoggedIn="this.isLoggedIn" v-on:group-selected="handleGroupSelected" v-on:leave-group="handleLeaveGroup"/>
         <div class="col">
           <Header v-bind:selected-group="selectedGroup.name" v-on:logout="logout"/>
           <ContentFeed v-bind:content="content"/>
@@ -38,16 +38,24 @@ export default {
         name: "",
         id: ""
       },
-      content: []
+      content: [],
+      userName: ""
     }
   },
   methods: {
     setLoggedIn: function (response) {
+      document.cookie = "userId=" + response.id + ";port=7777;";
+      this.userName = response.displayName;
       this.isLoggedIn = true;
     },
     logout: function() {
-      FB.logout();
       this.isLoggedIn = false;
+      this.content = [];
+      this.userName = "";
+      this.selectedGroup = {
+        name: "",
+        id: ""
+      };
     },
     handleGroupSelected: function($event) {
       this.selectedGroup = $event.target.dataset;
@@ -81,38 +89,6 @@ export default {
 
       event.stopPropagation();
     }
-  },
-  beforeCreate() {
-    const self = this;
-
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '325673938058158',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v3.2'
-      });
-        
-      FB.AppEvents.logPageView();  
-        
-      FB.getLoginStatus(function(response) {
-         if (response.status === 'connected') {
-           FB.api('/me', function(response) {
-             // TODO make this more secure
-              document.cookie = "userId=" + response.id + ";port=7777;";
-              self.isLoggedIn = true;
-            });   
-         }
-      });
-    };
-
-    (function(d, s, id){
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {return;}
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
   }
 }
 </script>

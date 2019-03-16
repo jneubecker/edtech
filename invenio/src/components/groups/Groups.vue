@@ -17,6 +17,7 @@ export default {
     GroupList,
     GroupsHeader
   },
+  props: ["isLoggedIn"],
   data () {
     return {
       groups: []
@@ -30,10 +31,17 @@ export default {
       this.groups.push(group);
     }
   },
-  mounted () {
-    axios
-      .get('http://localhost:7777/invenio/group', {withCredentials: true})
-      .then(response => (this.groups = response.data));
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(newVal, oldVal) {
+        if (newVal) {
+          axios
+            .get('http://localhost:7777/invenio/group', {withCredentials: true})
+            .then(response => (this.groups = response.data));
+        }
+      }
+    }
   }
 }
 </script>
