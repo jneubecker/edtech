@@ -6,7 +6,7 @@ To build
 
 To run
 
-- Docker
+- [Docker](https://www.docker.com/get-started)
 
 ## How to Build
 - Open a cmd prompt in ./invenio-api
