@@ -1,15 +1,21 @@
 ## Dependencies
-- Java
+To build
+
+- Java (version 8 or greater)
 - Maven
 
-Both Java and Maven are only required to build the API. It's possible in the future I will dockerize the build as well so that docker is the only dependency.
+To run
 
 - Docker
 
-## How to Run
+## How to Build
 - Open a cmd prompt in ./invenio-api
 - \> mvn package -DskipTests
-  - This will build the API and output a jar for docker to pick up
+- This will build the API and output a jar for docker to pick up
+
+## How to Run
+The API jar has been committed so that the app does not need built to run.
+
 - Open a cmd prompt in the project root
 - \> docker-compose up --build
   - This will build and start the container for the application
