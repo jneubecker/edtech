@@ -2,7 +2,7 @@
   <div class="sidebar col">
     <div class="user-info">{{ userName }}</div>
     <Groups v-bind:isLoggedIn="isLoggedIn" v-on:leave-group="$emit('leave-group')" v-on:group-selected="$emit('group-selected', $event)"/>
-    <Friends/>
+    <Friends v-bind:isLoggedIn="isLoggedIn"/>
   </div>
 </template>
 

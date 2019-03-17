@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,8 +60,25 @@ public class UserController {
         }).orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
+    @DeleteMapping(value = "/user/friend/{id}")
+    public void removeFriend(@CookieValue("userId") String userId, @PathVariable("id") String friendId) {
+        userRepository.findById(userId).map(user -> {
+            user.getFriends().remove(friendId);
+            return user;
+        }).ifPresent(userRepository::save);
+    }
+
     @GetMapping(value = "/user/friend")
     public Iterable<User> findFriends(@CookieValue("userId") String userId) {
         return userRepository.findById(userId).map(user -> userRepository.findAllById(user.getFriends())).orElse(Collections.emptyList());
+    }
+
+    @GetMapping(value = "/user/friend/not")
+    public Iterable<User> findNotFriends(@CookieValue("userId") String userId) {
+        return userRepository.findById(userId).map(user -> {
+            List<String> userIds = new ArrayList<>(user.getFriends());
+            userIds.add(userId);
+            return userRepository.findByIdNotIn(userIds);
+        }).orElse(Collections.emptyList());
     }
 }

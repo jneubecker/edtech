@@ -1,19 +1,20 @@
 <template>
   <div class="friends-container">
       <FriendsHeader v-on:friend-added="handleFriendAdded"/>
-      {{ friends }}
+      <FriendList v-bind:friends="friends"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import FriendsHeader from './FriendsHeader.vue'
-
+import FriendsHeader from './FriendsHeader.vue';
+import FriendList from './FriendList.vue';
 
 export default {
   name: 'Friends',
   components: {
-    FriendsHeader  
+    FriendsHeader,
+    FriendList
   },
   props: ["isLoggedIn"],
   data () {
@@ -31,7 +32,9 @@ export default {
       immediate: true,
       handler(newVal, oldVal) {
         if (newVal) {
-       
+          axios
+            .get('http://localhost:7777/invenio/user/friend', {withCredentials: true})
+            .then(response => (this.friends = response.data));
         }
       }
     }

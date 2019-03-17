@@ -42,6 +42,12 @@ export default {
 .group-list-element:hover {
   background-color: var(--accent-color);
 }
+.leave-group {
+  display: none;
+}
+.group-list-element:hover .leave-group {
+  display: inline-block;
+}
 .group-list-group {
   margin-right: 10px;
 }

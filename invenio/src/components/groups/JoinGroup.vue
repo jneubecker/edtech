@@ -5,9 +5,9 @@
         <div class="form-container"> 
             <div class="group-list">
                 <ul class="list-unstyled">
-                <li v-bind:key="group.id" v-for="group in groups">
+                  <li v-bind:key="group.id" v-for="group in groups">
                     <div class="group" :data-name="group.name" :data-id="group.id" v-on:click="joinGroup">{{ group.name }}</div>
-                </li>
+                  </li>
                 </ul>
             </div>
         </div>

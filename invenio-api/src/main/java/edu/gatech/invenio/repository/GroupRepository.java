@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface GroupRepository extends MongoRepository<Group, String> {
     public List<Group> findByMembersContaining(String userId);
+    public List<Group> findByMembersNotContaining(String userId);
 }

@@ -19,7 +19,14 @@ export default {
   props: ["friends"],
   methods: {
     removeFriend: function() {
-     
+      var self = this;
+      var friendId = event.target.dataset.id;
+
+      axios.delete(`http://localhost:7777/invenio/user/friend/${friendId}`, {withCredentials: true}).then(function() {
+        self.friends.splice(self.friends.findIndex(function(i){
+          return i.id === friendId;
+        }), 1);
+      });      
     }
   }
 }
@@ -32,5 +39,11 @@ export default {
 }
 .friend-list-element:hover {
   background-color: var(--accent-color);
+}
+.remove-friend {
+  display: none;
+}
+.friend-list-element:hover .remove-friend {
+  display: inline-block;
 }
 </style>

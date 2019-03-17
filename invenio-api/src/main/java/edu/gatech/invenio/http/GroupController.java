@@ -28,6 +28,15 @@ public class GroupController {
         }
     }
 
+    @GetMapping(value = "/group/not", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Group> findGroupsByUserNotIn(@CookieValue("userId") String userId) {
+        if (!userId.isEmpty()) {
+            return groupRepository.findByMembersNotContaining(userId);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     @GetMapping(value = "/group/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Group> findGroups() {
         return groupRepository.findAll();

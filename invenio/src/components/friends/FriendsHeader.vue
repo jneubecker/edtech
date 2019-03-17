@@ -17,7 +17,7 @@ export default {
   },
   methods: {
       showAddFriend: function() {
-        axios.get('http://localhost:7777/invenio/user', {withCredentials: true})
+        axios.get('http://localhost:7777/invenio/user/friend/not', {withCredentials: true})
           .then(response => {
             this.users = response.data;
             this.isAddFriendVisible = true;

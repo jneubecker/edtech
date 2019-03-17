@@ -1,7 +1,7 @@
 <template>
   <div class="top-header row">
       <div class="col pl-3">
-          {{ selectedGroup }}
+          <h4 class="group-header">{{ selectedGroup }}</h4>
       </div>
       <div class="col logout">
         <button class="btn btn-primary" v-on:click="$emit('logout')">Log Out</button>
@@ -36,5 +36,8 @@ export default {
 }
 .logout {
     max-width: 100px;
+}
+.group-header {
+  line-height: 50px;
 }
 </style>
