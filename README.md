@@ -27,4 +27,7 @@ The API jar has been committed so that the app does not need built to run.
   - If that doesn't work go to http://192.168.99.100:8080/invenio
 - Press ctrl+c in the command prompt to stop the containers
 
-![Screenshot](https://d1b10bmlvqabco.cloudfront.net/attach/jqfcudg7qwo8a/iyqq20ov61z72b/jt3q3ovhcr73/screenshot.png)
+## About
+This is a social media application with the goal of having the features needed to be used for course management as well.
+
+![Screenshot](https://lh4.googleusercontent.com/oLFLwL5aF5Tj3tmM1W-v2bMs7vE-BAjZdtILtRr52qG794N1pPJqtuDW5Gxlandzu8yZa-iMlIJNpOZQ7M0P3b8MGDUe4fS_4uo7Xf45f3o0Kp8ID_hQci64XQesckgjjA-iYa4N)
