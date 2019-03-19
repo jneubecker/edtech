@@ -27,4 +27,4 @@ The API jar has been committed so that the app does not need built to run.
   - If that doesn't work go to http://192.168.99.100:8080/invenio
 - Press ctrl+c in the command prompt to stop the containers
 
-[Screenshot](https://d1b10bmlvqabco.cloudfront.net/attach/jqfcudg7qwo8a/iyqq20ov61z72b/jt3q3ovhcr73/screenshot.png)
+![Screenshot](https://d1b10bmlvqabco.cloudfront.net/attach/jqfcudg7qwo8a/iyqq20ov61z72b/jt3q3ovhcr73/screenshot.png)
