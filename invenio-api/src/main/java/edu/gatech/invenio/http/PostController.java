@@ -19,8 +19,13 @@ public class PostController {
     }
 
     @GetMapping(value  = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Post> getPosts(@PathVariable("groupId") String groupId) {
+    public List<Post> getGroupPosts(@PathVariable("groupId") String groupId) {
         return postRepository.findByGroupId(groupId);
+    }
+
+    @GetMapping(value = "/user/post/{userId}")
+    public List<Post> getUserPosts(@PathVariable("userId") String userId) {
+        return postRepository.findByUserId(userId);
     }
 
     @PostMapping(value  = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)

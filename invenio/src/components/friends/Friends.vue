@@ -1,7 +1,7 @@
 <template>
   <div class="friends-container">
       <FriendsHeader v-on:friend-added="handleFriendAdded"/>
-      <FriendList v-bind:friends="friends"/>
+      <FriendList v-on:friend-selected="$emit('friend-selected', $event)" v-bind:friends="friends" v-on:unfriend="$emit('unfriend')"/>
   </div>
 </template>
 

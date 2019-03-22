@@ -26,7 +26,9 @@ export default {
         self.friends.splice(self.friends.findIndex(function(i){
           return i.id === friendId;
         }), 1);
-      });      
+      });
+      
+      this.$emit("unfriend")
     }
   }
 }

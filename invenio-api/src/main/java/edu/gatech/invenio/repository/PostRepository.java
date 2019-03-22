@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface PostRepository extends MongoRepository<Post, String> {
     public List<Post> findByGroupId(String groupId);
+    public List<Post> findByUserId(String userId);
 
 }

@@ -2,11 +2,18 @@
   <div id="app">
     <div class="container-fluid h-100 p-0" v-if="this.isLoggedIn">
       <div class="row h-100">
-        <Sidebar v-bind:userName="userName" v-bind:isLoggedIn="this.isLoggedIn" v-on:group-selected="handleGroupSelected" v-on:leave-group="handleLeaveGroup"/>
+        <Sidebar v-bind:user="user" 
+          v-bind:isLoggedIn="this.isLoggedIn" 
+          v-on:group-selected="handleGroupSelected" 
+          v-on:leave-group="handleLeaveGroupOrUnfriend"
+          v-on:friend-selected="handleFriendSelected"
+          v-on:unfriend="handleLeaveGroupOrUnfriend"
+          v-on:self-selected="handleFriendSelected"
+        />
         <div class="col">
-          <Header v-bind:selected-group="selectedGroup.name" v-on:logout="logout"/>
+          <Header v-bind:selected-group="selectedEntity.name" v-on:logout="logout"/>
           <ContentFeed v-bind:content="content"/>
-          <ContentInput v-on:post="post"/>
+          <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
         </div>
       </div>
     </div>
@@ -34,54 +41,65 @@ export default {
   data: function () {
     return {
       isLoggedIn: false,
-      selectedGroup: {
+      selectedEntity: {
         name: "",
         id: ""
       },
       content: [],
-      userName: ""
+      user: {},
+      inputDisabled: true
     }
   },
   methods: {
     setLoggedIn: function (response) {
       document.cookie = "userId=" + response.id + ";port=7777;";
-      this.userName = response.displayName;
+      this.user = response;
       this.isLoggedIn = true;
     },
     logout: function() {
       this.isLoggedIn = false;
       this.content = [];
-      this.userName = "";
-      this.selectedGroup = {
+      this.user = {};
+      this.selectedEntity = {
         name: "",
         id: ""
       };
     },
     handleGroupSelected: function($event) {
-      this.selectedGroup = $event.target.dataset;
+      this.selectedEntity = $event.target.dataset;
 
-      axios.get(`http://localhost:7777/invenio/group/post/${this.selectedGroup.id}`, {withCredentials: true})
+      axios.get(`http://localhost:7777/invenio/group/post/${this.selectedEntity.id}`, {withCredentials: true})
         .then(response => (this.content = response.data));
+
+      this.inputDisabled = false;
+    },
+    handleFriendSelected: function($event) {
+      this.selectedEntity = $event.target.dataset;
+
+      axios.get(`http://localhost:7777/invenio/user/post/${this.selectedEntity.id}`, {withCredentials: true})
+        .then(response => (this.content = response.data));
+
+      this.inputDisabled = true;
     },
     post: function(content) {
-      if (content.trim() && this.selectedGroup.id) {
+      if (content.trim() && this.selectedEntity.id) {
         const self = this;
         const data = {
           content: marked(content, { sanitize: true })
         }
 
-        axios.post(`http://localhost:7777/invenio/group/post/${self.selectedGroup.id}`, data, {withCredentials: true}).then(function(response) {
+        axios.post(`http://localhost:7777/invenio/group/post/${self.selectedEntity.id}`, data, {withCredentials: true}).then(function(response) {
           self.content.push(response.data);
         }); 
       }
     },
-    handleLeaveGroup: function() {
+    handleLeaveGroupOrUnfriend: function() {
       var self = this;
 
-      if (self.selectedGroup.id === event.target.dataset.id) {
+      if (self.selectedEntity.id === event.target.dataset.id) {
         self.content = [];
 
-        self.selectedGroup = {
+        self.selectedEntity = {
           name: "",
           id: ""
         }

@@ -2,7 +2,7 @@
   <div class="footer row text-center">
     <div class="col">
       <div class="input-group">
-        <textarea class="form-control content-input" v-model="content"></textarea>
+        <textarea class="form-control content-input" v-model="content" :disabled="disabled"></textarea>
         <div class="input-group-append">
           <span class="post-button input-group-text fas fa-plus" v-on:click="handlePost"></span>
         </div>
@@ -15,6 +15,7 @@
 
 export default {
   name: 'ContentInput',
+  props: ["disabled"],
   data: function () {
     return {
       content: ""
