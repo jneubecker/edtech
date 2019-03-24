@@ -2,15 +2,13 @@ package edu.gatech.invenio.model;
 
 import org.springframework.data.annotation.Id;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 
 public class User {
     private @Id String id;
     private String name;
     private String password;
     private String displayName;
-    private Set<String> friends = new HashSet<>();
 
     public User() {
 
@@ -38,7 +36,16 @@ public class User {
         return displayName;
     }
 
-    public Set<String> getFriends() {
-        return friends;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -9,9 +9,14 @@
           v-on:friend-selected="handleFriendSelected"
           v-on:unfriend="handleLeaveGroupOrUnfriend"
           v-on:self-selected="handleFriendSelected"
+          v-bind:friends="friends" 
         />
         <div class="col">
-          <Header v-bind:selected-group="selectedEntity.name" v-on:logout="logout"/>
+          <Header 
+            v-bind:selected-group="selectedEntity.name" 
+            v-on:logout="logout"
+            v-on:friend-approved="handleFriendApproved"
+          />
           <ContentFeed v-bind:content="content"/>
           <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
         </div>
@@ -47,7 +52,8 @@ export default {
       },
       content: [],
       user: {},
-      inputDisabled: true
+      inputDisabled: true,
+      friends: []
     }
   },
   methods: {
@@ -106,6 +112,21 @@ export default {
       }
 
       event.stopPropagation();
+    },
+    handleFriendApproved: function(friend) {
+      this.friends.push(friend);
+    }
+  },
+  watch: {
+    isLoggedIn: {
+      immediate: true,
+      handler(newVal, oldVal) {
+        if (newVal) {
+          axios
+            .get('http://localhost:7777/invenio/user/friend', {withCredentials: true})
+            .then(response => (this.friends = response.data));
+        }
+      }
     }
   }
 }

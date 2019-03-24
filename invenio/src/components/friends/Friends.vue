@@ -16,28 +16,11 @@ export default {
     FriendsHeader,
     FriendList
   },
-  props: ["isLoggedIn"],
-  data () {
-    return {
-      friends: []
-    }
-  },
+  props: ["isLoggedIn", "friends"],
   methods: {
     handleFriendAdded: function(friend) {
-      this.friends.push(friend);
+      // this.friends.push(friend);
     }  
-  },
-  watch: {
-    isLoggedIn: {
-      immediate: true,
-      handler(newVal, oldVal) {
-        if (newVal) {
-          axios
-            .get('http://localhost:7777/invenio/user/friend', {withCredentials: true})
-            .then(response => (this.friends = response.data));
-        }
-      }
-    }
   }
 }
 </script>
