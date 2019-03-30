@@ -13,7 +13,7 @@ public class Post {
 
     }
 
-    public Post(String content, String groupId, String userId) {
+    public Post(String content, String groupId, String userId, String markDown) {
         this.content = content;
         this.groupId = groupId;
         this.userId = userId;
@@ -34,4 +34,5 @@ public class Post {
     public String getUserId() {
         return userId;
     }
+
 }

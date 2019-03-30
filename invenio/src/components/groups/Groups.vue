@@ -1,6 +1,6 @@
 <template>
   <div id="groups-container">
-    <GroupsHeader class="groups-header" v-on:group-created="handleGroupCreate" v-on:group-joined="handleGroupJoined"/>
+    <GroupsHeader class="groups-header" v-on:show-join-group="$emit('show-join-group')" v-on:group-created="addGroup"/>
     <GroupList v-on:group-selected="$emit('group-selected', $event)" v-bind:groups="groups" v-on:leave-group="$emit('leave-group')"/>
   </div>
 </template>
@@ -24,10 +24,7 @@ export default {
     }
   },
   methods: {
-    handleGroupCreate: function(group) {
-      this.groups.push(group);
-    },
-    handleGroupJoined: function(group) {
+    addGroup: function(group) {
       this.groups.push(group);
     }
   },

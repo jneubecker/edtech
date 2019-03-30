@@ -1,6 +1,7 @@
 <template>
   <div class="footer row text-center">
     <div class="col">
+      <div class="divider"></div>
       <div class="input-group">
         <textarea class="form-control content-input" v-model="content" :disabled="disabled"></textarea>
         <div class="input-group-append">
@@ -31,6 +32,11 @@ export default {
 </script>
 
 <style scoped>
+.divider {
+  border-top: 1px solid var(--accent-color);
+  border-left: 200px solid var(--main-light-color);
+  border-right: 200px solid var(--main-light-color);
+}
 .footer {
   height: 250px;
 }

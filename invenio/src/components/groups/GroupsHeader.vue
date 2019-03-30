@@ -1,8 +1,9 @@
 <template>
   <div id="groups-header">
-    <span class="list-header clickable" v-on:click="showJoinGroup">GROUPS</span> 
-    <i v-on:click="showCreateGroup" class="fas fa-plus-circle clickable pull-right"></i>
-    <JoinGroup v-bind:groups="groups" v-if="this.isJoinGroupVisible" v-on:group-joined="handleGroupJoined" v-on:cancel-join="hideJoinGroup"/>
+    <div class="group-header">
+      <span class="list-header clickable" v-on:click="$emit('show-join-group')">Groups</span> 
+      <i v-on:click="showCreateGroup" class="fas fa-plus-circle clickable"></i>
+    </div>
     <CreateGroup v-if="this.isCreateGroupVisible" v-on:group-created="handleGroupCreate" v-on:cancel-create="hideCreateGroup"/>
   </div>
 </template>
@@ -29,32 +30,20 @@ export default {
       handleGroupCreate: function(group) {
         this.isCreateGroupVisible = false;
         this.$emit('group-created', group);
-      },
-      showJoinGroup: function() {
-        axios.get('http://localhost:7777/invenio/group/not', {withCredentials: true})
-          .then(response => {
-            this.groups = response.data;
-            this.isJoinGroupVisible = true;
-          });
-      },
-      hideJoinGroup: function() {
-        this.isJoinGroupVisible = false;
-      },
-      handleGroupJoined: function(group) {
-        this.isJoinGroupVisible = false;
-        this.$emit('group-joined', group);
       }
   },
   data: function () {
     return {
       isCreateGroupVisible: false,
       isJoinGroupVisible: false,
-      groups: []
     }
   }
 }
 </script>
 
 <style scoped>
-
+.group-header {
+  display: flex;
+  align-items: center;
+}
 </style>

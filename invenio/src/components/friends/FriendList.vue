@@ -3,8 +3,8 @@
     <ul id="friend-list" class="list-unstyled">
       <li v-bind:key="friend.id" v-for="friend in friends">
         <div class="friend-list-element" :data-id="friend.id" :data-name="friend.displayName" v-on:click="$emit('friend-selected', $event)">
-          {{ friend.displayName }}
-          <i :data-id="friend.id" v-on:click="removeFriend" class="fas fa-minus-circle pull-right remove-friend clickable"></i>
+          <span class="friend-info" :data-id="friend.id" :data-name="friend.displayName">{{ friend.displayName }}</span>
+          <i :data-id="friend.id" v-on:click="removeFriend" class="fas fa-minus-circle remove-friend clickable"></i>
         </div>
       </li>
     </ul>
@@ -36,7 +36,9 @@ export default {
 
 <style scoped>
 .friend-list-element {
-  padding: 5px 15px 0px 15px;
+  display: flex;
+  align-items: center;
+  padding: 2px 15px 2px 15px;
   cursor: pointer;
 }
 .friend-list-element:hover {
@@ -47,5 +49,8 @@ export default {
 }
 .friend-list-element:hover .remove-friend {
   display: inline-block;
+}
+.friend-info {
+  flex-basis: 100%;
 }
 </style>

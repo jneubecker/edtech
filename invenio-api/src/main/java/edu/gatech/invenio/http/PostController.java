@@ -31,6 +31,6 @@ public class PostController {
     @PostMapping(value  = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Post savePost(@CookieValue("userId") String userId
             , @PathVariable("groupId") String groupId, @RequestBody Post post) {
-        return postRepository.save(new Post(post.getContent(), groupId, userId));
+        return postRepository.save(new Post(post.getContent(), groupId, userId, post.getMarkDown()));
     }
 }

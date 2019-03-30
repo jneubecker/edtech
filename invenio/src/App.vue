@@ -2,23 +2,39 @@
   <div id="app">
     <div class="container-fluid h-100 p-0" v-if="this.isLoggedIn">
       <div class="row h-100">
-        <Sidebar v-bind:user="user" 
+        <Sidebar 
+          ref="sideBar"
+          v-bind:user="user" 
           v-bind:isLoggedIn="this.isLoggedIn" 
           v-on:group-selected="handleGroupSelected" 
-          v-on:leave-group="handleLeaveGroupOrUnfriend"
+          v-on:leave-group="handleLeaveGroup"
           v-on:friend-selected="handleFriendSelected"
-          v-on:unfriend="handleLeaveGroupOrUnfriend"
+          v-on:unfriend="handleUnfriend"
           v-on:self-selected="handleFriendSelected"
           v-bind:friends="friends" 
+          v-on:show-friend-approval="showFriendApproval"
+          v-on:show-join-group="showJoinGroup"
         />
         <div class="col">
           <Header 
-            v-bind:selected-group="selectedEntity.name" 
+            v-bind:headerLabel="headerLabel" 
             v-on:logout="logout"
-            v-on:friend-approved="handleFriendApproved"
           />
-          <ContentFeed v-bind:content="content"/>
-          <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
+          <div v-if="currentScreen == 'content'">
+            <ContentFeed v-bind:content="content" v-bind:user="user"/>
+            <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
+          </div>
+          <div class= "other" v-if="currentScreen != 'content'">
+            <FriendApproval 
+              v-if="currentScreen == 'friend-approval'" 
+              v-on:friend-approved="handleFriendApproved"
+            />
+            <JoinGroup 
+              ref="joinGroups"
+              v-if="currentScreen == 'join-group'" 
+              v-on:group-joined="handleGroupJoined"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -32,6 +48,9 @@ import Header from './components/Header.vue'
 import LoginPage from './components/LoginPage.vue'
 import ContentFeed from './components/ContentFeed.vue'
 import ContentInput from './components/ContentInput.vue'
+import FriendApproval from './components/friends/FriendApproval.vue';
+import JoinGroup from './components/groups/JoinGroup.vue';
+
 import axios from 'axios';
 
 export default {
@@ -41,7 +60,9 @@ export default {
     LoginPage,
     Header,
     ContentInput,
-    ContentFeed
+    ContentFeed,
+    FriendApproval,
+    JoinGroup
   },
   data: function () {
     return {
@@ -53,7 +74,9 @@ export default {
       content: [],
       user: {},
       inputDisabled: true,
-      friends: []
+      friends: [],
+      currentScreen: "",
+      headerLabel: ""
     }
   },
   methods: {
@@ -70,9 +93,13 @@ export default {
         name: "",
         id: ""
       };
+      this.headerLabel = "";
+      this.currentScreen = "";
     },
     handleGroupSelected: function($event) {
       this.selectedEntity = $event.target.dataset;
+      this.currentScreen = 'content';
+      this.headerLabel = this.selectedEntity.name;
 
       axios.get(`http://localhost:7777/invenio/group/post/${this.selectedEntity.id}`, {withCredentials: true})
         .then(response => (this.content = response.data));
@@ -80,7 +107,9 @@ export default {
       this.inputDisabled = false;
     },
     handleFriendSelected: function($event) {
+      this.currentScreen = 'content';
       this.selectedEntity = $event.target.dataset;
+      this.headerLabel = this.selectedEntity.name;
 
       axios.get(`http://localhost:7777/invenio/user/post/${this.selectedEntity.id}`, {withCredentials: true})
         .then(response => (this.content = response.data));
@@ -91,7 +120,7 @@ export default {
       if (content.trim() && this.selectedEntity.id) {
         const self = this;
         const data = {
-          content: marked(content, { sanitize: true })
+          content: content
         }
 
         axios.post(`http://localhost:7777/invenio/group/post/${self.selectedEntity.id}`, data, {withCredentials: true}).then(function(response) {
@@ -99,7 +128,7 @@ export default {
         }); 
       }
     },
-    handleLeaveGroupOrUnfriend: function() {
+    handleUnfriend: function() {
       var self = this;
 
       if (self.selectedEntity.id === event.target.dataset.id) {
@@ -113,8 +142,38 @@ export default {
 
       event.stopPropagation();
     },
+    handleLeaveGroup: function() {
+      var self = this;
+
+      if (self.selectedEntity.id === event.target.dataset.id) {
+        self.content = [];
+
+        self.selectedEntity = {
+          name: "",
+          id: ""
+        }
+      }
+
+      const joinGroups = this.$refs.joinGroups;
+      if (joinGroups) {
+        joinGroups.addGroup(event.target.dataset);
+      }
+
+      event.stopPropagation();
+    },
     handleFriendApproved: function(friend) {
       this.friends.push(friend);
+    },
+    showFriendApproval: function() {
+      this.currentScreen = 'friend-approval';
+      this.headerLabel = 'Friend Requests';
+    },
+    showJoinGroup: function() {
+      this.currentScreen = 'join-group';
+      this.headerLabel = 'Join Group';
+    },
+    handleGroupJoined: function(group) {
+      this.$refs.sideBar.addGroup(group);
     }
   },
   watch: {
@@ -210,6 +269,7 @@ h2 {
 }
 .list-header {
   color: var(--secondary-color);
+  flex-basis: 100%;
 }
 .row {
   margin: 0px;
@@ -219,5 +279,9 @@ h2 {
 }
 textarea {
   resize: none;
+}
+.other {
+  height: calc(100vh - 50px);
+  overflow: auto;
 }
 </style>

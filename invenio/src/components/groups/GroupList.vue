@@ -3,8 +3,8 @@
     <ul id="group-list" class="list-unstyled">
       <li v-bind:key="group.id" v-for="group in groups">
         <div class="group-list-element" :data-id="group.id" :data-name="group.name" v-on:click="$emit('group-selected', $event)">
-          {{ group.name }}
-          <i :data-id="group.id" v-on:click="leaveGroup" class="fas fa-minus-circle pull-right leave-group clickable"></i>
+          <span :data-id="group.id" :data-name="group.name" class="group-info">{{ group.name }}</span>
+          <i :data-id="group.id" :data-name="group.name" v-on:click="leaveGroup" class="fas fa-minus-circle leave-group clickable"></i>
         </div>
       </li>
     </ul>
@@ -19,8 +19,8 @@ export default {
   props: ["groups"],
   methods: {
     leaveGroup: function() {
-      var self = this;
-      var groupId = event.target.dataset.id;
+      const self = this;
+      const groupId = event.target.dataset.id;
 
       axios.delete(`http://localhost:7777/invenio/group/member/${groupId}`, {withCredentials: true}).then(function() {
         self.groups.splice(self.groups.findIndex(function(i){
@@ -28,7 +28,8 @@ export default {
         }), 1);
       });      
 
-      this.$emit("leave-group")
+      this.$emit("leave-group");
+      event.stopPropagation();
     }
   }
 }
@@ -36,7 +37,9 @@ export default {
 
 <style scoped>
 .group-list-element {
-  padding: 5px 15px 0px 15px;
+  display: flex;
+  align-items: center;
+  padding: 2px 15px 2px 15px;
   cursor: pointer;
 }
 .group-list-element:hover {
@@ -50,5 +53,8 @@ export default {
 }
 .group-list-group {
   margin-right: 10px;
+}
+.group-info {
+  flex-basis: 100%;
 }
 </style>
