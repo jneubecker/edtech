@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post shadow-sm">
     <div class="post-content"  v-if="!beingEdited">
       <div class="post-header">
         <div class="post-info">

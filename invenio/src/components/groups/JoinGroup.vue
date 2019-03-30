@@ -5,7 +5,7 @@
       </div>
       <ul class="list-unstyled">
         <li v-bind:key="group.id" v-for="group in filteredGroups">
-          <div class="group">
+          <div class="group shadow-sm">
             <i class="fas fa-users mr-2"></i>
             <span class="group-info">{{ group.name }}</span>
             <button class="ml-2 btn btn-primary btn-sm" :data-name="group.name" :data-id="group.id" v-on:click="joinGroup">Join</button>

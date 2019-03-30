@@ -1,6 +1,6 @@
 <template>
   <div class="friend-approval">
-    <div class="friend-request" v-bind:key="user.id" v-for="user in friendRequests">
+    <div class="friend-request shadow-sm" v-bind:key="user.id" v-for="user in friendRequests">
       <i class="fas fa-user mr-2"></i>
       <span class="user-info">{{ user.displayName }}</span>
       <button class="ml-2 btn btn-primary btn-sm" :data-id="user.id" v-on:click="deleteRequest">delete</button>
