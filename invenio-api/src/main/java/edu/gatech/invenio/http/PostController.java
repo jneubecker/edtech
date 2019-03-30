@@ -18,7 +18,7 @@ public class PostController {
         this.postRepository = postRepository;
     }
 
-    @GetMapping(value  = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Post> getGroupPosts(@PathVariable("groupId") String groupId) {
         return postRepository.findByGroupId(groupId);
     }
@@ -28,9 +28,26 @@ public class PostController {
         return postRepository.findByUserId(userId);
     }
 
-    @PostMapping(value  = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Post savePost(@CookieValue("userId") String userId
             , @PathVariable("groupId") String groupId, @RequestBody Post post) {
-        return postRepository.save(new Post(post.getContent(), groupId, userId, post.getMarkDown()));
+        return postRepository.save(new Post(post.getContent(), groupId, userId));
+    }
+
+    @PutMapping(value = "/post")
+    public Post updatePost(@CookieValue("userId") String userId, @RequestBody Post post) {
+        return postRepository.findById(post.getId()).filter(foundPost -> foundPost.getUserId().equals(userId)).map(currentPost -> {
+            currentPost.setContent(post.getContent());
+            postRepository.save(currentPost);
+            return currentPost;
+        }).orElse(null);
+    }
+
+    @DeleteMapping(value = "/post/{id}")
+    public Post deletePost(@CookieValue("userId") String userId, @PathVariable("id") String id) {
+        return postRepository.findById(id).filter(post -> post.getUserId().equals(userId)).map(post -> {
+            postRepository.delete(post);
+            return post;
+        }).orElse(null);
     }
 }

@@ -13,7 +13,7 @@ public class Post {
 
     }
 
-    public Post(String content, String groupId, String userId, String markDown) {
+    public Post(String content, String groupId, String userId) {
         this.content = content;
         this.groupId = groupId;
         this.userId = userId;
@@ -25,6 +25,10 @@ public class Post {
 
     public String getContent() {
         return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getGroupId() {
