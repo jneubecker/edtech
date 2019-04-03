@@ -1,31 +1,41 @@
 <template>
-  <div class="post shadow-sm">
+  <div>
     <div class="post-content"  v-if="!beingEdited">
       <div class="post-header">
         <div class="post-info">
         </div>
-        <i class="fas fa-edit edit-post mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:click="showEditPost"></i> 
+        <i class="fas fa-comment post-icon mr-2" v-on:click="showAddComment"></i>
+        <i class="fas fa-edit post-icon mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:click="showEditPost"></i> 
         <i class="fas fa-trash delete-post" v-if="post.userId == user.id" :data-id="post.id" v-on:dblclick="deletePost"></i>
       </div>
       <div v-html="markedContent">
       </div>
     </div> 
-    <EditPost v-bind:post="post" v-if="beingEdited" v-on:hide-edit="hideEditPost"/> 
+    <EditPost v-bind:post="post" v-if="beingEdited" v-on:hide-edit="hideEditPost"/>
+    <div class="comments ml-3 mt-2">
+      <div v-bind:key="post.id" v-for="post in post.subPosts">
+        <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removeComment"/>
+      </div>
+    </div>
+    <Comment v-bind:postId="post.id" v-if="isCommentInputVisible" v-on:comment-added="handleAddComment" v-on:hide-comment="hideAddComment"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import EditPost from './EditPost.vue';
+import Comment from './Comment.vue'
 
 export default {
   name: 'Post',
   components: {
-    EditPost
+    EditPost,
+    Comment
   },
   data: function () {
     return {
       beingEdited: false,
+      isCommentInputVisible: false
     }
   },
   props: ["post", "user"],
@@ -43,6 +53,21 @@ export default {
       axios.delete(`http://localhost:7777/invenio/post/${postId}`, {withCredentials: true}).then(function() {
         self.$emit('delete-post', postId);
       });
+    },
+    handleAddComment: function(comment) {
+      this.post.subPosts.push(comment)
+      this.isCommentInputVisible = false;
+    },
+    hideAddComment: function() {
+      this.isCommentInputVisible = false;
+    },
+    showAddComment: function() {
+      this.isCommentInputVisible = true;
+    },
+    removeComment: function(postId) {
+      this.post.subPosts.splice(this.post.subPosts.findIndex(function(i){
+        return i.id === postId;
+      }), 1);
     }
   }, computed: {
     markedContent: function() {
@@ -53,23 +78,14 @@ export default {
 </script>
 
 <style scoped>
-.post {
-  background-color: white;
-  color: black;
-  margin: 15px;
-  margin-left: 100px;
-  margin-right: 100px;
-  padding: 10px;
-  border-radius: 4px;
-}
 .post-edit {
   white-space: pre;
   color: var(--main-dark-color);
 }
-.edit-post {
+.post-icon {
   cursor: pointer;
 }
-.edit-post:hover {
+.post-icon:hover {
   color: var(--secondary-color);
 }
 .delete-post {
@@ -87,5 +103,9 @@ export default {
 }
 .edit-post-input {
   height: initial;
+}
+.comments {
+  border-left: solid 1px #000000;
+  padding-left: 10px;
 }
 </style>

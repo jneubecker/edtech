@@ -2,7 +2,9 @@
   <div class="row content-feed">
     <div class="col">
       <div v-bind:key="post.id" v-for="post in content">
-        <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removePost"/>
+        <div class="post shadow-sm">
+          <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removePost"/>
+        </div>
       </div>
     </div>
   </div>
@@ -32,5 +34,13 @@ export default {
   height: calc(100vh - 300px);
   overflow: auto;
 }
-
+.post {
+  background-color: white;
+  color: black;
+  margin: 15px;
+  margin-left: 100px;
+  margin-right: 100px;
+  padding: 10px;
+  border-radius: 4px;
+}
 </style>

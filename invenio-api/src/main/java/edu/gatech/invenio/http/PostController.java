@@ -43,6 +43,17 @@ public class PostController {
         }).orElse(null);
     }
 
+    // TODO only be able to comment on posts you can view (have to be in group post is in)
+    @PutMapping(value = "/post/comment/{postId}")
+    public Post commentOnPost(@CookieValue("userId") String userId, @PathVariable("postId") String postId, @RequestBody Post post) {
+        return postRepository.findById(postId).map(currentPost -> {
+            Post newPost = postRepository.save(new Post(post.getContent(), null, userId));
+            currentPost.getSubPosts().add(newPost);
+            postRepository.save(currentPost);
+            return newPost;
+        }).orElse(null);
+    }
+
     @DeleteMapping(value = "/post/{id}")
     public Post deletePost(@CookieValue("userId") String userId, @PathVariable("id") String id) {
         return postRepository.findById(id).filter(post -> post.getUserId().equals(userId)).map(post -> {

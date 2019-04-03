@@ -27,6 +27,16 @@ The API jar has been committed so that the app does not need built to run.
   - If that doesn't work go to http://192.168.99.100:8080/invenio
 - Press ctrl+c in the command prompt to stop the containers
 
+## Troubleshooting
+If you are on a Windows machine and see something similar to:
+```
+ERROR: for mongodb  Cannot start service mongodb: 
+driver failed programming external connectivity on endpoint mongodb (69f59f76b92d5e763a28077a207a0f5bb9fcb6e874d272873195934269282ba2): 
+Error starting userland proxy: mkdir /port/tcp:0.0.0.0:27017:tcp:172.20.0.2:27017: input/output error
+ERROR: Encountered errors while bringing up the project
+```
+Then restart Docker (right click in task bar -> restart...) and run docker-compose up again. 
+
 ## About
 This is a social media application with the goal of having the features needed to be used for course management as well.
 

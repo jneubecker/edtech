@@ -1,6 +1,10 @@
 package edu.gatech.invenio.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Post {
     @Id
@@ -8,6 +12,7 @@ public class Post {
     private String content;
     private String groupId;
     private String userId;
+    private @DBRef List<Post> subPosts = new ArrayList<>();
 
     public Post() {
 
@@ -39,4 +44,7 @@ public class Post {
         return userId;
     }
 
+    public List<Post> getSubPosts() {
+        return subPosts;
+    }
 }
