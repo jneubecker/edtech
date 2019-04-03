@@ -6,14 +6,14 @@
         </div>
         <i class="fas fa-comment post-icon mr-2" v-on:click="showAddComment"></i>
         <i class="fas fa-edit post-icon mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:click="showEditPost"></i> 
-        <i class="fas fa-trash delete-post" v-if="post.userId == user.id" :data-id="post.id" v-on:dblclick="deletePost"></i>
+        <i class="fas fa-trash delete-post mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:dblclick="deletePost"></i>
       </div>
       <div v-html="markedContent">
       </div>
     </div> 
     <EditPost v-bind:post="post" v-if="beingEdited" v-on:hide-edit="hideEditPost"/>
-    <div class="comments ml-3 mt-2">
-      <div v-bind:key="post.id" v-for="post in post.subPosts">
+    <div class="comments ml-3 mt-2" v-if="post.subPosts.length > 0">
+      <div class="comment" v-bind:key="post.id" v-for="post in post.subPosts">
         <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removeComment"/>
       </div>
     </div>
@@ -105,7 +105,10 @@ export default {
   height: initial;
 }
 .comments {
-  border-left: solid 1px #000000;
+  border-left: solid 1px #cccccc;;
+}
+.comment {
+  padding-top: 5px;
   padding-left: 10px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="post-edit mt-3">
+  <div class="comment-input mt-3 mb-3">
     <div class="input-group">
       <textarea class="form-control edit-post-input" v-model="comment" ref="editedContent" v-on:keyup="resizeTextArea"></textarea>
     </div>
@@ -46,7 +46,7 @@ export default {
 </script>
 
 <style scoped>
-.post-edit {
+.comment-input {
   white-space: pre;
   color: var(--main-dark-color);
 }
