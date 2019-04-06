@@ -13,6 +13,7 @@ public class Post {
     private String groupId;
     private String userId;
     private @DBRef List<Post> subPosts = new ArrayList<>();
+    private @DBRef List<Like> likes = new ArrayList<>();
 
     public Post() {
 
@@ -46,5 +47,9 @@ public class Post {
 
     public List<Post> getSubPosts() {
         return subPosts;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
     }
 }

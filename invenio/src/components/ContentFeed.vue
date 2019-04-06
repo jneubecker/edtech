@@ -6,6 +6,9 @@
           <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removePost"/>
         </div>
       </div>
+      <div class="empty-feed" v-if="content.length === 0">
+        <h1>There are no posts or this feed is private</h1>
+      </div>
     </div>
   </div>
 </template>
@@ -33,14 +36,18 @@ export default {
 .content-feed {
   height: calc(100vh - 300px);
   overflow: auto;
+  color: black;
 }
 .post {
   background-color: white;
-  color: black;
   margin: 15px;
   margin-left: 100px;
   margin-right: 100px;
   padding: 10px;
   border-radius: 4px;
+}
+.empty-feed {
+  margin: 100px;
+  color: grey;
 }
 </style>

@@ -1,21 +1,30 @@
 package edu.gatech.invenio.http;
 
+import edu.gatech.invenio.model.Like;
 import edu.gatech.invenio.model.Post;
+import edu.gatech.invenio.repository.LikeRepository;
 import edu.gatech.invenio.repository.PostRepository;
+import edu.gatech.invenio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class PostController {
     private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PostController(PostRepository postRepository) {
+    public PostController(PostRepository postRepository, LikeRepository likeRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.likeRepository = likeRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping(value = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,8 +33,10 @@ public class PostController {
     }
 
     @GetMapping(value = "/user/post/{userId}")
-    public List<Post> getUserPosts(@PathVariable("userId") String userId) {
-        return postRepository.findByUserId(userId);
+    public List<Post> getUserPosts(@CookieValue("userId") String requestUserId, @PathVariable("userId") String userId) {
+        return userRepository.findById(userId)
+                .filter(user -> "public".equals(user.getSettings().getFeedPrivacy()) || userId.equals(requestUserId))
+                .map(user -> postRepository.findByUserId(userId)).orElse(Collections.emptyList());
     }
 
     @PostMapping(value = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,5 +71,24 @@ public class PostController {
             postRepository.delete(post);
             return post;
         }).orElse(null);
+    }
+
+    // TODO only be able to like posts you can view (have to be in group post is in)
+    @PutMapping(value = "post/{id}/like")
+    public void like(@CookieValue("userId") String userId, @PathVariable("id") String postId) {
+        postRepository.findById(postId).ifPresent(post -> {
+            List<Like> likes = likeRepository.findByPostIdAndUserId(postId, userId);
+
+            if (!likes.isEmpty()) {
+                post.getLikes().remove(likes.get(0));
+                postRepository.save(post);
+                likeRepository.delete(likes.get(0));
+            } else {
+                Like newLike = new Like(postId, userId);
+                post.getLikes().add(newLike);
+                likeRepository.save(newLike);
+                postRepository.save(post);
+            }
+        });
     }
 }

@@ -1,6 +1,9 @@
 <template>
   <div class="sidebar col">
-    <div class="user-info clickable" :data-id="user.id" :data-name="user.displayName" v-on:click="$emit('self-selected', $event)">{{ user.displayName }}</div>
+    <div class="user-header d-flex align-items-center">
+      <span class="user-info clickable w-100" :data-id="user.id" :data-name="user.displayName" v-on:click="$emit('self-selected', $event)">{{ user.displayName }}</span>
+      <i class="fas fa-cog clickable" v-on:click="$emit('goto-settings')"></i>
+    </div>
     <Groups       
       ref="groups"
       v-on:show-join-group="$emit('show-join-group')"
@@ -43,7 +46,7 @@ export default {
     background-color: var(--main-dark-color);
     max-width: 250px;
   }
-  .user-info {
+  .user-header {
     padding: 15px 15px 0px 15px;;
   }
 </style>

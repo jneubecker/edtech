@@ -1,6 +1,7 @@
 package edu.gatech.invenio.http;
 
 import edu.gatech.invenio.model.Friend;
+import edu.gatech.invenio.model.Settings;
 import edu.gatech.invenio.model.User;
 import edu.gatech.invenio.repository.FriendRepository;
 import edu.gatech.invenio.repository.UserRepository;
@@ -114,5 +115,13 @@ public class UserController {
         List<String> friendIds = friendRepository.findByFriendAndApproved(userId, false).stream().map(Friend::getUser).collect(Collectors.toList());
 
         return userRepository.findAllById(friendIds);
+    }
+
+    @PutMapping("user/settings")
+    public User updateSettings(@CookieValue("userId") String userId, @RequestBody Settings settings) {
+        return userRepository.findById(userId).map(user -> {
+            user.setSettings(settings);
+            return userRepository.save(user);
+        }).orElse(null);
     }
 }

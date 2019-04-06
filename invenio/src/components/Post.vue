@@ -4,6 +4,7 @@
       <div class="post-header">
         <div class="post-info">
         </div>
+        <i class="fas fa-heart post-icon mr-2" v-on:click="like" :title="post.likes.length + ' Like(s)'"></i>
         <i class="fas fa-comment post-icon mr-2" v-on:click="showAddComment"></i>
         <i class="fas fa-edit post-icon mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:click="showEditPost"></i> 
         <i class="fas fa-trash delete-post mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:dblclick="deletePost"></i>
@@ -12,12 +13,12 @@
       </div>
     </div> 
     <EditPost v-bind:post="post" v-if="beingEdited" v-on:hide-edit="hideEditPost"/>
+    <Comment v-bind:postId="post.id" v-if="isCommentInputVisible" v-on:comment-added="handleAddComment" v-on:hide-comment="hideAddComment"/>
     <div class="comments ml-3 mt-2" v-if="post.subPosts.length > 0">
       <div class="comment" v-bind:key="post.id" v-for="post in post.subPosts">
         <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removeComment"/>
       </div>
     </div>
-    <Comment v-bind:postId="post.id" v-if="isCommentInputVisible" v-on:comment-added="handleAddComment" v-on:hide-comment="hideAddComment"/>
   </div>
 </template>
 
@@ -68,6 +69,20 @@ export default {
       this.post.subPosts.splice(this.post.subPosts.findIndex(function(i){
         return i.id === postId;
       }), 1);
+    },
+    like: function() {
+      const self = this;
+      axios.put(`http://localhost:7777/invenio/post/${self.post.id}/like`, {}, {withCredentials: true});
+
+      var index = this.post.likes.findIndex(function(i) {
+        return i.userId === self.user.id && i.postId === self.post.id;
+      });
+
+      if (index === -1) {
+        self.post.likes.push({ postId: self.post.id, userId: self.user.id });
+      } else {
+        self.post.likes.splice(index, 1);
+      }
     }
   }, computed: {
     markedContent: function() {

@@ -14,6 +14,7 @@
           v-bind:friends="friends" 
           v-on:show-friend-approval="showFriendApproval"
           v-on:show-join-group="showJoinGroup"
+          v-on:goto-settings="showSettings"
         />
         <div class="col">
           <Header 
@@ -34,6 +35,7 @@
               v-if="currentScreen == 'join-group'" 
               v-on:group-joined="handleGroupJoined"
             />
+            <Settings v-bind:user="user" v-if="currentScreen === 'settings'"/>
           </div>
         </div>
       </div>
@@ -50,6 +52,7 @@ import ContentFeed from './components/ContentFeed.vue'
 import ContentInput from './components/ContentInput.vue'
 import FriendApproval from './components/friends/FriendApproval.vue';
 import JoinGroup from './components/groups/JoinGroup.vue';
+import Settings from './components/Settings.vue'
 
 import axios from 'axios';
 
@@ -62,7 +65,8 @@ export default {
     ContentInput,
     ContentFeed,
     FriendApproval,
-    JoinGroup
+    JoinGroup,
+    Settings
   },
   data: function () {
     return {
@@ -174,6 +178,10 @@ export default {
     },
     handleGroupJoined: function(group) {
       this.$refs.sideBar.addGroup(group);
+    },
+    showSettings: function() {
+      this.headerLabel = "Settings";
+      this.currentScreen = 'settings';
     }
   },
   watch: {
