@@ -1,3 +1,6 @@
+## Disclaimer
+I am aware that the API is very unsecure. For this class project I'm prioritizing functionality. In the future or if I have extra time I'll come back and add proper authentication and authorization.
+
 ## Dependencies
 To build
 
