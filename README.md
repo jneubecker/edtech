@@ -16,6 +16,8 @@ To run
 ## How to Run
 The API jar has been committed so that the app does not need built to run.
 
+- Open a cmd prompt in the project root/invenio and install node modules
+  - \> npm install
 - Open a cmd prompt in the project root
 - \> docker-compose up --build
   - This will build and start the container for the application

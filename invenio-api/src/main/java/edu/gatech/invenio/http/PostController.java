@@ -36,7 +36,7 @@ public class PostController {
     public List<Post> getUserPosts(@CookieValue("userId") String requestUserId, @PathVariable("userId") String userId) {
         return userRepository.findById(userId)
                 .filter(user -> "public".equals(user.getSettings().getFeedPrivacy()) || userId.equals(requestUserId))
-                .map(user -> postRepository.findByUserId(userId)).orElse(Collections.emptyList());
+                .map(user -> postRepository.findByUserIdAndGroupIdNotNull(userId)).orElse(Collections.emptyList());
     }
 
     @PostMapping(value = "/group/post/{groupId}", produces = MediaType.APPLICATION_JSON_VALUE)
