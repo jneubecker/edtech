@@ -36,11 +36,8 @@ export default {
       const self = this;
       const groupId = event.target.dataset.id;
 
-      axios.put(`http://localhost:7777/invenio/group/member/${groupId}`, {}, {withCredentials: true}).then(function() {
-        self.$emit('group-joined', {
-            id: groupId,
-            name: event.target.dataset.name
-        });
+      axios.put(`http://localhost:7777/invenio/group/member/${groupId}`, {}, {withCredentials: true}).then(function(response) {
+        self.$emit('group-joined', response.data);
 
         self.groups.splice(self.groups.findIndex(function(i){
             return i.id === groupId;

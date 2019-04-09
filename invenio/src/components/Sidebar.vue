@@ -10,6 +10,8 @@
       v-bind:isLoggedIn="isLoggedIn" 
       v-on:leave-group="$emit('leave-group')" 
       v-on:group-selected="$emit('group-selected', $event)"
+      v-bind:user="user"
+      v-on:goto-group-settings="(group) => $emit('goto-group-settings', group)"
     />
     <Friends  
       v-bind:friends="friends" 

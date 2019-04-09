@@ -29,7 +29,7 @@ export default {
     updateSettings: function() {
       const self = this;
       const settings = self.settings;
-      axios.put(`http://localhost:7777/invenio/user/settings`, settings, {withCredentials: true}).then(function(response) {
+      axios.put(`http://localhost:7777/invenio/user/settings`, settings, {withCredentials: true}).then(function() {
         self.$emit('setting-updated', settings);
       });
     }
