@@ -7,7 +7,7 @@
         <i class="fas fa-heart post-icon mr-2" v-on:click="like" :title="post.likes.length + ' Like(s)'"></i>
         <i class="fas fa-comment post-icon mr-2" v-on:click="showAddComment"></i>
         <i class="fas fa-edit post-icon mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:click="showEditPost"></i> 
-        <i class="fas fa-trash delete-post mr-2" v-if="post.userId == user.id" :data-id="post.id" v-on:dblclick="deletePost"></i>
+        <i class="fas fa-trash delete-post mr-2" v-if="post.userId == user.id || (group && (group.admins.includes(user.id) || group.moderators.includes(user.id)))" :data-id="post.id" v-on:dblclick="deletePost"></i>
       </div>
       <div v-html="markedContent">
       </div>
@@ -39,7 +39,7 @@ export default {
       isCommentInputVisible: false
     }
   },
-  props: ["post", "user"],
+  props: ["post", "user", "group"],
   methods: {
     showEditPost: function() {
       this.beingEdited = true;

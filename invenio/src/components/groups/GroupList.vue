@@ -2,7 +2,7 @@
   <div class="group-list">
     <ul id="group-list" class="list-unstyled">
       <li v-bind:key="group.id" v-for="group in groups">
-        <div class="group-list-element" :data-id="group.id" :data-name="group.name" v-on:click="$emit('group-selected', $event)">
+        <div class="group-list-element" :data-id="group.id" :data-name="group.name" v-on:click="$emit('group-selected', group)">
           <span :data-id="group.id" :data-name="group.name" class="group-info">{{ group.name }}</span>
           <i :data-id="group.id" :data-name="group.name" v-on:click="leaveGroup" class="fas fa-minus-circle leave-group clickable" v-if="!group.admins.includes(user.id)"></i>
           <i :data-id="group.id" class="fas fa-cog clickable settings" v-if="group.admins.includes(user.id)" v-on:click="gotoSettings"></i>
@@ -23,7 +23,7 @@ export default {
       const self = this;
       const groupId = event.target.dataset.id;
 
-      axios.delete(`http://localhost:7777/invenio/group/member/${groupId}`, {withCredentials: true}).then(function() {
+      axios.delete(`http://localhost:7777/invenio/group/${groupId}/member`, {withCredentials: true}).then(function() {
         self.groups.splice(self.groups.findIndex(function(i) {
           return i.id === groupId;
         }), 1);

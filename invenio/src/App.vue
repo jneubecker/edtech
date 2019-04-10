@@ -23,7 +23,7 @@
             v-on:logout="logout"
           />
           <div v-if="currentScreen == 'content'">
-            <ContentFeed v-bind:content="content" v-bind:user="user"/>
+            <ContentFeed v-bind:group="selectedGroup" v-bind:content="content" v-bind:user="user"/>
             <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
           </div>
           <div class= "other" v-if="currentScreen != 'content'">
@@ -37,7 +37,7 @@
               v-on:group-joined="handleGroupJoined"
             />
             <Settings v-bind:user="user" v-if="currentScreen === 'settings'"/>
-            <GroupSettings v-bind:group="selectedGroup" v-if="currentScreen === 'groupSettings'"/>
+            <GroupSettings v-bind:currentUser="user" v-bind:group="selectedGroup" v-if="currentScreen === 'groupSettings'" v-on:group-updated="updateGroup"/>
           </div>
         </div>
       </div>
@@ -105,8 +105,11 @@ export default {
       this.headerLabel = "";
       this.currentScreen = "";
     },
-    handleGroupSelected: function($event) {
-      this.selectedEntity = $event.target.dataset;
+    handleGroupSelected: function(group) {
+      this.selectedEntity = group;
+      if (this.selectedEntity.admins) {
+        this.selectedGroup = this.selectedEntity;
+      }
       this.currentScreen = 'content';
       this.headerLabel = this.selectedEntity.name;
 
@@ -117,6 +120,7 @@ export default {
     },
     handleFriendSelected: function($event) {
       this.currentScreen = 'content';
+      this.selectedGroup = null;
       this.selectedEntity = $event.target.dataset;
       this.headerLabel = this.selectedEntity.name;
 
@@ -189,10 +193,13 @@ export default {
       this.currentScreen = 'settings';
     },
     gotoGroupSettings: function(group) {
-      this.headerLabel = 'Group Settings';
+      this.headerLabel = group.name;
       this.selectedGroup = group;
       this.currentScreen = "groupSettings";
       event.stopPropagation();
+    },
+    updateGroup: function(group) {
+      this.selectedGroup = group;
     }
   },
   watch: {

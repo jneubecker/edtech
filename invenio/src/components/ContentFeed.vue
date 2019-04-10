@@ -3,7 +3,7 @@
     <div class="col">
       <div v-bind:key="post.id" v-for="post in content">
         <div class="post shadow-sm">
-          <Post v-bind:post="post" v-bind:user="user" v-on:delete-post="removePost"/>
+          <Post v-bind:group="group" v-bind:post="post" v-bind:user="user" v-on:delete-post="removePost"/>
         </div>
       </div>
       <div class="empty-feed" v-if="content.length === 0">
@@ -18,7 +18,7 @@ import Post from './Post.vue'
 
 export default {
   name: 'ContentFeed',
-  props: ["content", "user"],
+  props: ["content", "user", "group"],
   components: {
     Post
   },

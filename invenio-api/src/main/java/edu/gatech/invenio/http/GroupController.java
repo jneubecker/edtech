@@ -61,58 +61,62 @@ public class GroupController {
         }).orElse(null);
     }
 
-    @DeleteMapping(value = "/group/member/{id}")
+    @DeleteMapping(value = "/group/{id}/member")
     public void leaveGroup(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId) {
         groupRepository.findById(groupId).map(group -> {
             group.getMembers().remove(userId);
+            group.getAdmins().remove(userId);
+            group.getModerators().remove(userId);
             return group;
         }).ifPresent(groupRepository::save);
     }
 
+    @DeleteMapping(value = "/group/{groupId}/member/{userId}")
+    public Group removeUser(@CookieValue("userId") String userId,  @PathVariable(value = "groupId") String groupId, @PathVariable(value = "userId") String userToRemove) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> {
+            group.getMembers().remove(userToRemove);
+            group.getAdmins().remove(userToRemove);
+            group.getModerators().remove(userToRemove);
+            return groupRepository.save(group);
+        }).orElse(null);
+    }
+
     @PutMapping(value = "/group/{id}/admin/{userId}")
-    public void addAdmin(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
-        groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).ifPresent(group -> {
-            userRepository.findById(adminUserId).ifPresent(user -> {
-                group.getAdmins().add(user.getId());
-                groupRepository.save(group);
-            });
-        });
+    public Group addAdmin(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> userRepository.findById(adminUserId).map(user -> {
+            group.getAdmins().add(user.getId());
+            return groupRepository.save(group);
+        }).orElse(null)).orElse(null);
     }
 
     @PutMapping(value = "/group/{id}/moderator/{userId}")
-    public void addModerator(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
-        groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).ifPresent(group -> {
-            userRepository.findById(adminUserId).ifPresent(user -> {
-                group.getModerators().add(user.getId());
-                groupRepository.save(group);
-            });
-        });
+    public Group addModerator(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> userRepository.findById(adminUserId).map(user -> {
+            group.getModerators().add(user.getId());
+            return groupRepository.save(group);
+        }).orElse(null)).orElse(null);
     }
 
     @DeleteMapping(value = "/group/{id}/admin/{userId}")
-    public void removeAdmin(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
-        groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).ifPresent(group -> {
-            userRepository.findById(adminUserId).ifPresent(user -> {
-                group.getAdmins().remove(user.getId());
-                groupRepository.save(group);
-            });
-        });
+    public Group removeAdmin(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> userRepository.findById(adminUserId).map(user -> {
+            group.getAdmins().remove(user.getId());
+            return groupRepository.save(group);
+        }).orElse(null)).orElse(null);
     }
 
     @DeleteMapping(value = "/group/{id}/moderator/{userId}")
-    public void removeModerator(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
-        groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).ifPresent(group -> {
-            userRepository.findById(adminUserId).ifPresent(user -> {
-                group.getModerators().remove(user.getId());
-                groupRepository.save(group);
-            });
-        });
+    public Group removeModerator(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId, @PathVariable("userId") String adminUserId) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> userRepository.findById(adminUserId).map(user -> {
+            group.getModerators().remove(user.getId());
+            return groupRepository.save(group);
+        }).orElse(null)).orElse(null);
     }
 
     @GetMapping(value = "/group/{id}/members")
     public Iterable<User> getGroupMembers(@CookieValue("userId") String userId, @PathVariable(value = "id") String groupId) {
         return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group ->
-            userRepository.findAllById(group.getMembers())
+                userRepository.findAllById(group.getMembers())
         ).orElse(Collections.emptyList());
     }
 
