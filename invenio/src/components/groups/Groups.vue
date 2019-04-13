@@ -1,7 +1,7 @@
 <template>
   <div id="groups-container">
     <GroupsHeader class="groups-header" v-on:show-join-group="$emit('show-join-group')" v-on:group-created="addGroup"/>
-    <GroupList v-bind:user="user" v-on:goto-group-settings="(group) => $emit('goto-group-settings', group)" v-on:group-selected="$emit('group-selected', $event)" v-bind:groups="groups" v-on:leave-group="$emit('leave-group')"/>
+    <GroupList v-bind:user="user" v-on:group-selected="$emit('group-selected', $event)" v-bind:groups="groups" v-on:leave-group="(group) => $emit('leave-group', group)"/>
   </div>
 </template>
 

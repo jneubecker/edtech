@@ -1,13 +1,13 @@
 package edu.gatech.invenio.model;
 
-public class Settings {
+public class UserSettings {
     private String feedPrivacy;
 
-    public Settings() {
+    public UserSettings() {
 
     }
 
-    public Settings(String feedPrivacy) {
+    public UserSettings(String feedPrivacy) {
         this.feedPrivacy = feedPrivacy;
     }
 

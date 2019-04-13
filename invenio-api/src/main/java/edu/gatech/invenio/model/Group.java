@@ -13,6 +13,8 @@ public class Group {
     private Set<String> members = new HashSet<>();
     private Set<String> admins = new HashSet<>();
     private Set<String> moderators = new HashSet<>();
+    private GroupSettings groupSettings = new GroupSettings("public");
+    private Set<String> pendingRequests = new HashSet<>();
 
     public Group() {
 
@@ -42,5 +44,17 @@ public class Group {
 
     public Set<String> getModerators() {
         return moderators;
+    }
+
+    public GroupSettings getGroupSettings() {
+        return groupSettings;
+    }
+
+    public void setGroupSettings(GroupSettings groupSettings) {
+        this.groupSettings = groupSettings;
+    }
+
+    public Set<String> getPendingRequests() {
+        return pendingRequests;
     }
 }

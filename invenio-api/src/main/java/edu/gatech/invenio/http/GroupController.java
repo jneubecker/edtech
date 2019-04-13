@@ -1,6 +1,7 @@
 package edu.gatech.invenio.http;
 
 import edu.gatech.invenio.model.Group;
+import edu.gatech.invenio.model.GroupSettings;
 import edu.gatech.invenio.model.User;
 import edu.gatech.invenio.repository.GroupRepository;
 import edu.gatech.invenio.repository.UserRepository;
@@ -21,6 +22,11 @@ public class GroupController {
     public GroupController(GroupRepository groupRepository, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping(value = "/group/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Group findGroup(@CookieValue("userId") String userId, @PathVariable("id") String groupId) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).orElse(null);
     }
 
     @GetMapping(value = "/group", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,4 +126,19 @@ public class GroupController {
         ).orElse(Collections.emptyList());
     }
 
+    @PutMapping("group/{id}/settings")
+    public Group updateSettings(@CookieValue("userId") String userId, @PathVariable("id") String groupId, @RequestBody GroupSettings settings) {
+        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> userRepository.findById(userId).map(user -> {
+            group.setGroupSettings(settings);
+            return groupRepository.save(group);
+        }).orElse(null)).orElse(null);
+    }
+
+    @PutMapping("group/{id}/requestaccess")
+    public Group requestAccess(@CookieValue("userId") String userId, @PathVariable("id") String groupId) {
+        return groupRepository.findById(groupId).map(group -> {
+            group.getPendingRequests().add(userId);
+            return groupRepository.save(group);
+        }).orElse(null);
+    }
 }

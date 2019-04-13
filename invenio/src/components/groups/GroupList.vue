@@ -4,8 +4,8 @@
       <li v-bind:key="group.id" v-for="group in groups">
         <div class="group-list-element" :data-id="group.id" :data-name="group.name" v-on:click="$emit('group-selected', group)">
           <span :data-id="group.id" :data-name="group.name" class="group-info">{{ group.name }}</span>
-          <i :data-id="group.id" :data-name="group.name" v-on:click="leaveGroup" class="fas fa-minus-circle leave-group clickable" v-if="!group.admins.includes(user.id)"></i>
-          <i :data-id="group.id" class="fas fa-cog clickable settings" v-if="group.admins.includes(user.id)" v-on:click="gotoSettings"></i>
+          <i :data-id="group.id" :data-name="group.name" v-on:click="leaveGroup(group)" class="fas fa-minus-circle leave-group clickable" v-if="!group.admins.includes(user.id)"></i>
+          <i class="fas fa-star" v-if="group.admins.includes(user.id)"></i>
         </div>
       </li>
     </ul>
@@ -19,26 +19,17 @@ export default {
   name: 'GroupList',
   props: ["groups", "user"],
   methods: {
-    leaveGroup: function() {
+    leaveGroup: function(group) {
       const self = this;
-      const groupId = event.target.dataset.id;
 
-      axios.delete(`http://localhost:7777/invenio/group/${groupId}/member`, {withCredentials: true}).then(function() {
+      axios.delete(`http://localhost:7777/invenio/group/${group.id}/member`, {withCredentials: true}).then(function() {
         self.groups.splice(self.groups.findIndex(function(i) {
-          return i.id === groupId;
+          return i.id === group.id;
         }), 1);
       });      
 
-      this.$emit("leave-group");
+      this.$emit("leave-group", group);
       event.stopPropagation();
-    },
-    gotoSettings: function() {
-      const groupId = event.target.dataset.id;
-      const group = this.groups[this.groups.findIndex(function(i) {
-          return i.id === groupId;
-      })];
-
-      this.$emit("goto-group-settings", group);
     }
   }
 }

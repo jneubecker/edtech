@@ -7,7 +7,7 @@
           v-bind:user="user" 
           v-bind:isLoggedIn="this.isLoggedIn" 
           v-on:group-selected="handleGroupSelected" 
-          v-on:leave-group="handleLeaveGroup"
+          v-on:leave-group="(group) => handleLeaveGroup(group)"
           v-on:friend-selected="handleFriendSelected"
           v-on:unfriend="handleUnfriend"
           v-on:self-selected="handleFriendSelected"
@@ -15,7 +15,6 @@
           v-on:show-friend-approval="showFriendApproval"
           v-on:show-join-group="showJoinGroup"
           v-on:goto-settings="showSettings"
-          v-on:goto-group-settings="gotoGroupSettings"
         />
         <div class="col">
           <Header 
@@ -23,7 +22,7 @@
             v-on:logout="logout"
           />
           <div v-if="currentScreen == 'content'">
-            <ContentFeed v-bind:group="selectedGroup" v-bind:content="content" v-bind:user="user"/>
+            <ContentFeed v-bind:group="selectedGroup" v-bind:content="content" v-bind:user="user" v-on:goto-group-settings="(group) => gotoGroupSettings(group)"/>
             <ContentInput v-on:post="post"  v-bind:disabled="inputDisabled"/>
           </div>
           <div class= "other" v-if="currentScreen != 'content'">
@@ -35,6 +34,7 @@
               ref="joinGroups"
               v-if="currentScreen == 'join-group'" 
               v-on:group-joined="handleGroupJoined"
+              v-bind:user="user"
             />
             <Settings v-bind:user="user" v-if="currentScreen === 'settings'"/>
             <GroupSettings v-bind:currentUser="user" v-bind:group="selectedGroup" v-if="currentScreen === 'groupSettings'" v-on:group-updated="updateGroup"/>
@@ -155,10 +155,10 @@ export default {
 
       event.stopPropagation();
     },
-    handleLeaveGroup: function() {
+    handleLeaveGroup: function(group) {
       var self = this;
 
-      if (self.selectedEntity.id === event.target.dataset.id) {
+      if (self.selectedEntity.id === group.id) {
         self.content = [];
 
         self.selectedEntity = {
@@ -169,7 +169,7 @@ export default {
 
       const joinGroups = this.$refs.joinGroups;
       if (joinGroups) {
-        joinGroups.addGroup(event.target.dataset);
+        joinGroups.addGroup(group);
       }
 
       event.stopPropagation();

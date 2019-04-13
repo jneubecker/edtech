@@ -22,14 +22,14 @@ export default {
   props: ["user"],
   data: function() {
     return {
-      settings: this.user.settings
+      settings: this.user.userSettings
     }
   },
   methods: {
     updateSettings: function() {
       const self = this;
       const settings = self.settings;
-      axios.put(`http://localhost:7777/invenio/user/settings`, settings, {withCredentials: true}).then(function() {
+      axios.put(`http://localhost:7777/invenio/user/userSettings`, settings, {withCredentials: true}).then(function() {
         self.$emit('setting-updated', settings);
       });
     }

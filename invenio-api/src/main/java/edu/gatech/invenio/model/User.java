@@ -1,7 +1,6 @@
 package edu.gatech.invenio.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.Objects;
 
@@ -10,7 +9,7 @@ public class User {
     private String name;
     private String password;
     private String displayName;
-    private Settings settings = new Settings("private");
+    private UserSettings userSettings = new UserSettings("private");
 
     public User() {
 
@@ -38,12 +37,12 @@ public class User {
         return displayName;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public UserSettings getUserSettings() {
+        return userSettings;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public void setUserSettings(UserSettings userSettings) {
+        this.userSettings = userSettings;
     }
 
     @Override

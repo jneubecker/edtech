@@ -1,5 +1,10 @@
 <template>
   <div class="row content-feed">
+    <div v-if="group">
+      <div class="position-absolute w-100">
+        <i class="fas fa-cog settings clickable" v-if="group && group.admins.includes(user.id)" v-on:click="gotoSettings(group)"></i>
+      </div>
+    </div>
     <div class="col">
       <div v-bind:key="post.id" v-for="post in content">
         <div class="post shadow-sm">
@@ -27,6 +32,9 @@ export default {
       this.content.splice(this.content.findIndex(function(i){
         return i.id === postId;
       }), 1);
+    },
+    gotoSettings: function(group) {
+      this.$emit("goto-group-settings", group);
     }
   }
 }
@@ -49,5 +57,13 @@ export default {
 .empty-feed {
   margin: 100px;
   color: grey;
+}
+.settings {
+  font-size: 25px;
+  color:var(--accent-color);
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  z-index: 100;
 }
 </style>

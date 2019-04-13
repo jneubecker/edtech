@@ -1,7 +1,7 @@
 package edu.gatech.invenio.http;
 
 import edu.gatech.invenio.model.Friend;
-import edu.gatech.invenio.model.Settings;
+import edu.gatech.invenio.model.UserSettings;
 import edu.gatech.invenio.model.User;
 import edu.gatech.invenio.repository.FriendRepository;
 import edu.gatech.invenio.repository.UserRepository;
@@ -117,10 +117,10 @@ public class UserController {
         return userRepository.findAllById(friendIds);
     }
 
-    @PutMapping("user/settings")
-    public User updateSettings(@CookieValue("userId") String userId, @RequestBody Settings settings) {
+    @PutMapping("user/userSettings")
+    public User updateSettings(@CookieValue("userId") String userId, @RequestBody UserSettings userSettings) {
         return userRepository.findById(userId).map(user -> {
-            user.setSettings(settings);
+            user.setUserSettings(userSettings);
             return userRepository.save(user);
         }).orElse(null);
     }

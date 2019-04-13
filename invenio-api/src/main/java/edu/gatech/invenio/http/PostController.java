@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
@@ -35,7 +34,7 @@ public class PostController {
     @GetMapping(value = "/user/post/{userId}")
     public List<Post> getUserPosts(@CookieValue("userId") String requestUserId, @PathVariable("userId") String userId) {
         return userRepository.findById(userId)
-                .filter(user -> "public".equals(user.getSettings().getFeedPrivacy()) || userId.equals(requestUserId))
+                .filter(user -> "public".equals(user.getUserSettings().getFeedPrivacy()) || userId.equals(requestUserId))
                 .map(user -> postRepository.findByUserIdAndGroupIdNotNull(userId)).orElse(Collections.emptyList());
     }
 

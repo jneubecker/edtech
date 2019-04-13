@@ -6,9 +6,12 @@
       <ul class="list-unstyled">
         <li v-bind:key="group.id" v-for="group in filteredGroups">
           <div class="group shadow-sm">
-            <i class="fas fa-users mr-2"></i>
+            <i v-if="group.groupSettings.groupPrivacy === 'public'" class="fas fa-users mr-2"></i>
+            <i v-if="group.groupSettings.groupPrivacy === 'private'" class="fas fa-user-lock mr-2"></i>
             <span class="group-info">{{ group.name }}</span>
-            <button class="ml-2 btn btn-primary btn-sm" :data-name="group.name" :data-id="group.id" v-on:click="joinGroup">Join</button>
+            <button v-if="group.groupSettings.groupPrivacy === 'public'" class="ml-2 btn btn-primary btn-sm" :data-name="group.name" :data-id="group.id" v-on:click="joinGroup">Join</button>
+            <button v-if="group.groupSettings.groupPrivacy === 'private' && !group.pendingRequests.includes(user.id)" class="ml-2 btn btn-primary btn-sm"  v-on:click="requsetAccess(group)">Request Access</button>
+            <button class="btn btn-sm" disabled v-if="group.groupSettings.groupPrivacy === 'private' && group.pendingRequests.includes(user.id)">Request Pending</button>
           </div>
         </li>
       </ul>
@@ -20,6 +23,7 @@ import axios from 'axios';
 
 export default {
   name: 'JoinGroup',
+  props: ["user"],
   data: function() {
     return {
       groups: [],
@@ -46,6 +50,11 @@ export default {
     },
     addGroup: function(group) {
       this.groups.push(group);
+    },
+    requsetAccess: function(group) {
+      axios.put(`http://localhost:7777/invenio/group//${group.id}/requestaccess`, {}, {withCredentials: true}).then(function(response) {
+        group = response.data;
+      }); 
     }
   },
   mounted() {
@@ -79,5 +88,8 @@ export default {
 }
 .group-search {
   margin-top: 15px;
+}
+.btn {
+  color: white;
 }
 </style>
