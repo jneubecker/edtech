@@ -1,36 +1,67 @@
 <template>
   <div class="settings">
     <div class="setting">
-      <div class="setting-label">Manage Members</div>
-      <div class="setting-card">
-        <div class="d-flex mt-1" v-bind:key="user.id" v-for="user in members">
-          <i class="fas fa-user mr-2"></i>
-          <span class="user-info">{{ user.displayName }}</span>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="none" :checked="!realGroup.admins.includes(user.id) && !realGroup.moderators.includes(user.id)" v-on:change="updateSettings">
-            <label class="form-check-label" :for="user.name">None</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="moderator" :checked="realGroup.moderators.includes(user.id)" v-on:change="updateSettings">
-            <label class="form-check-label" :for="user.name">Moderator</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="admin" :checked="realGroup.admins.includes(user.id)" v-on:change="updateSettings">
-            <label class="form-check-label" :for="user.name">Admin</label>
-          </div>
-          <button v-if="currentUser.id !== user.id" class="ml-2 btn btn-primary btn-sm" v-on:click="removeUser(user.id)">Remove</button>
+      <div v-if="realGroup.admins.includes(currentUser.id)">
+
+        <div class="setting-label">Group Privacy</div>
+        <div class="setting-card">
+            <div class="radio">
+              <label><input value="public" type="radio" name="privacy" class="mr-2" v-model="settings.groupPrivacy" v-on:change="updateSettings">Public</label>
+            </div>
+            <div class="radio">
+              <label><input value="private" type="radio" name="privacy" class="mr-2" v-model="settings.groupPrivacy" v-on:change="updateSettings">Private</label>
+            </div>
         </div>
+
+        <div class="setting-label">Member Approval Policy</div>
+        <div class="setting-card">
+            <div class="radio">
+              <label><input value="admin" type="radio" name="approval" class="mr-2" v-model="settings.memberApprovalPolicy" v-on:change="updateSettings">Admins</label>
+            </div>
+            <div class="radio">
+              <label><input value="moderator" type="radio" name="approval" class="mr-2" v-model="settings.memberApprovalPolicy" v-on:change="updateSettings">Moderators/Admins</label>
+            </div>
+            <div class="radio">
+              <label><input value="anyone" type="radio" name="approval" class="mr-2" v-model="settings.memberApprovalPolicy" v-on:change="updateSettings">Any Member</label>
+            </div>
+        </div>
+
+        <div class="setting-label">Manage Members</div>
+        <div class="setting-card">
+          <div class="d-flex mt-1" v-bind:key="user.id" v-for="user in members">
+            <i class="fas fa-user mr-2"></i>
+            <span class="user-info">{{ user.displayName }}</span>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="none" :checked="!realGroup.admins.includes(user.id) && !realGroup.moderators.includes(user.id)" v-on:change="updateUserSettings">
+              <label class="form-check-label" :for="user.name">None</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="moderator" :checked="realGroup.moderators.includes(user.id)" v-on:change="updateUserSettings">
+              <label class="form-check-label" :for="user.name">Moderator</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" :disabled="currentUser.id === user.id" :data-userid="user.id" type="radio" :name="user.name" value="admin" :checked="realGroup.admins.includes(user.id)" v-on:change="updateUserSettings">
+              <label class="form-check-label" :for="user.name">Admin</label>
+            </div>
+            <button v-if="currentUser.id !== user.id" class="ml-2 btn btn-primary btn-sm" v-on:click="removeUser(user.id)">Remove</button>
+          </div>
+        </div>
+
       </div>
 
-      <div class="setting-label">Group Privacy</div>
-      <div class="setting-card">
-          <div class="radio">
-            <label><input value="public" type="radio" name="optradio" class="mr-2" v-model="settings.groupPrivacy" v-on:change="updatePrivacySettings">Public</label>
-          </div>
-          <div class="radio">
-            <label><input value="private" type="radio" name="optradio" class="mr-2" v-model="settings.groupPrivacy" v-on:change="updatePrivacySettings">Private</label>
-          </div>
+      <div class="setting-label">Membership Requests</div>
+      <div v-bind:key="user.id" v-for="user in realGroup.pendingRequests">
+        <div class="setting-card d-flex">
+            <i class="fas fa-user mr-2"></i>
+            <span class="user-info">{{ user.displayName }}</span>
+            <button class="ml-2 btn btn-primary btn-sm" v-on:click="denyRequest(user)">Deny</button>
+            <button class="ml-2 btn btn-primary btn-sm" v-on:click="approveRequest(user)">Approve</button>
+        </div>
       </div>
+      <div class="setting-card d-flex" v-if="realGroup.pendingRequests.length === 0">
+        No Pending Membership Requests
+      </div>
+      
     </div>
   </div>
 </template>
@@ -44,12 +75,12 @@ export default {
   data: function() {
     return {
       members: [],
-      settings: { groupPrivacy: "" },
-      realGroup: { admins: [], moderators: [] }
+      settings: { groupPrivacy: "", memberApprovalPolicy: "" },
+      realGroup: { admins: [], moderators: [], pendingRequests: [] }
     }
   },
   methods: {
-    updateSettings: function(event) {
+    updateUserSettings: function(event) {
       var self = this;
       const value = event.target.value;
       const userId = event.target.dataset.userid;
@@ -94,7 +125,6 @@ export default {
       }
     },
     removeUser: function(userId) {
-      console.log(userId);
       const self = this;
       const groupId = self.realGroup.id;
 
@@ -104,11 +134,24 @@ export default {
         }), 1);
       }); 
     },
-    updatePrivacySettings: function() {
+    updateSettings: function() {
       const self = this;
       const settings = self.settings;
       axios.put(`http://localhost:7777/invenio/group/${this.realGroup.id}/settings`, settings, {withCredentials: true}).then(function(response) {
         self.$emit('group-updated', response.data);
+      });
+    },
+    denyRequest: function(user) {
+      var self = this;
+      axios.delete(`http://localhost:7777/invenio/group/${this.realGroup.id}/memberapproval/${user.id}`, {withCredentials: true}).then(function(response) {
+        self.realGroup = response.data;
+      });
+    },
+    approveRequest: function(user) {
+      var self = this;
+
+      axios.put(`http://localhost:7777/invenio/group/${this.realGroup.id}/memberapproval/${user.id}`, {}, {withCredentials: true}).then(function(response) {
+        self.realGroup = response.data;
       });
     }
   }, 

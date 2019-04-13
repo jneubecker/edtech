@@ -26,7 +26,7 @@ public class GroupController {
 
     @GetMapping(value = "/group/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Group findGroup(@CookieValue("userId") String userId, @PathVariable("id") String groupId) {
-        return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).orElse(null);
+        return groupRepository.findOptionalByIdAndMembersContaining(groupId, userId).orElse(null);
     }
 
     @GetMapping(value = "/group", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +78,7 @@ public class GroupController {
     }
 
     @DeleteMapping(value = "/group/{groupId}/member/{userId}")
-    public Group removeUser(@CookieValue("userId") String userId,  @PathVariable(value = "groupId") String groupId, @PathVariable(value = "userId") String userToRemove) {
+    public Group removeUser(@CookieValue("userId") String userId, @PathVariable(value = "groupId") String groupId, @PathVariable(value = "userId") String userToRemove) {
         return groupRepository.findOptionalByIdAndAdminsContaining(groupId, userId).map(group -> {
             group.getMembers().remove(userToRemove);
             group.getAdmins().remove(userToRemove);
@@ -136,9 +136,35 @@ public class GroupController {
 
     @PutMapping("group/{id}/requestaccess")
     public Group requestAccess(@CookieValue("userId") String userId, @PathVariable("id") String groupId) {
-        return groupRepository.findById(groupId).map(group -> {
-            group.getPendingRequests().add(userId);
+        return groupRepository.findById(groupId).map(group -> userRepository.findById(userId).map(user -> {
+            group.getPendingRequests().add(user);
             return groupRepository.save(group);
-        }).orElse(null);
+        }).orElse(null)).orElse(null);
     }
+
+    @PutMapping("group/{id}/memberapproval/{memberId}")
+    public Group approveRequest(@CookieValue("userId") String userId, @PathVariable("id") String groupId, @PathVariable("memberId") String memberId) {
+        return groupRepository.findOptionalByIdAndMembersContaining(groupId, userId).map(group -> userRepository.findById(memberId).map(user -> {
+            if (group.getGroupSettings().getMemberApprovalPolicy().equals("anyone") || group.getAdmins().contains(userId) || (group.getGroupSettings().getMemberApprovalPolicy().equals("moderator") && group.getModerators().contains(userId))) {
+                group.getPendingRequests().remove(user);
+                group.getMembers().add(user.getId());
+                return groupRepository.save(group);
+            } else {
+                return null;
+            }
+        }).orElse(null)).orElse(null);
+    }
+
+    @DeleteMapping("group/{id}/memberapproval/{memberId}")
+    public Group denyRequest(@CookieValue("userId") String userId, @PathVariable("id") String groupId, @PathVariable("memberId") String memberId) {
+        return groupRepository.findOptionalByIdAndMembersContaining(groupId, userId).map(group -> userRepository.findById(memberId).map(user -> {
+            if (group.getGroupSettings().getMemberApprovalPolicy().equals("anyone") || group.getAdmins().contains(userId) || (group.getGroupSettings().getMemberApprovalPolicy().equals("moderator") && group.getModerators().contains(userId))) {
+                group.getPendingRequests().remove(user);
+                return groupRepository.save(group);
+            } else {
+                return null;
+            }
+        }).orElse(null)).orElse(null);
+    }
+
 }

@@ -14,7 +14,7 @@ public class Group {
     private Set<String> admins = new HashSet<>();
     private Set<String> moderators = new HashSet<>();
     private GroupSettings groupSettings = new GroupSettings("public");
-    private Set<String> pendingRequests = new HashSet<>();
+    private @DBRef Set<User> pendingRequests = new HashSet<>();
 
     public Group() {
 
@@ -54,7 +54,7 @@ public class Group {
         this.groupSettings = groupSettings;
     }
 
-    public Set<String> getPendingRequests() {
+    public Set<User> getPendingRequests() {
         return pendingRequests;
     }
 }

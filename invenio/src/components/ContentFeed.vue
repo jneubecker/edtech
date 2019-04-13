@@ -2,7 +2,7 @@
   <div class="row content-feed">
     <div v-if="group">
       <div class="position-absolute w-100">
-        <i class="fas fa-cog settings clickable" v-if="group && group.admins.includes(user.id)" v-on:click="gotoSettings(group)"></i>
+        <i class="fas fa-cog settings clickable" v-if="showSettings" v-on:click="gotoSettings(group)"></i>
       </div>
     </div>
     <div class="col">
@@ -35,6 +35,12 @@ export default {
     },
     gotoSettings: function(group) {
       this.$emit("goto-group-settings", group);
+    }
+  },
+  computed: {
+    showSettings: function() {
+      const group = this.group;
+      return group && (group.groupSettings.memberApprovalPolicy === 'anyone' || group.admins.includes(this.user.id) || (group.groupSettings.memberApprovalPolicy === 'moderator' && group.moderators.includes(this.user.id)));
     }
   }
 }

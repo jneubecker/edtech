@@ -10,8 +10,8 @@
             <i v-if="group.groupSettings.groupPrivacy === 'private'" class="fas fa-user-lock mr-2"></i>
             <span class="group-info">{{ group.name }}</span>
             <button v-if="group.groupSettings.groupPrivacy === 'public'" class="ml-2 btn btn-primary btn-sm" :data-name="group.name" :data-id="group.id" v-on:click="joinGroup">Join</button>
-            <button v-if="group.groupSettings.groupPrivacy === 'private' && !group.pendingRequests.includes(user.id)" class="ml-2 btn btn-primary btn-sm"  v-on:click="requsetAccess(group)">Request Access</button>
-            <button class="btn btn-sm" disabled v-if="group.groupSettings.groupPrivacy === 'private' && group.pendingRequests.includes(user.id)">Request Pending</button>
+            <button v-if="group.groupSettings.groupPrivacy === 'private' && !group.pendingRequests.map(user => user.id).includes(user.id)" class="ml-2 btn btn-primary btn-sm"  v-on:click="requsetAccess(group)">Request Access</button>
+            <button class="btn btn-sm" disabled v-if="group.groupSettings.groupPrivacy === 'private' && group.pendingRequests.map(user => user.id).includes(user.id)">Request Pending</button>
           </div>
         </li>
       </ul>
@@ -52,8 +52,13 @@ export default {
       this.groups.push(group);
     },
     requsetAccess: function(group) {
+      var self = this;
+
       axios.put(`http://localhost:7777/invenio/group//${group.id}/requestaccess`, {}, {withCredentials: true}).then(function(response) {
-        group = response.data;
+        const index = self.groups.findIndex(function(i){
+          return i.id === group.id;
+        });
+        self.groups[index].pendingRequests = response.data.pendingRequests;        
       }); 
     }
   },

@@ -10,4 +10,5 @@ public interface GroupRepository extends MongoRepository<Group, String> {
     List<Group> findByMembersContaining(String userId);
     List<Group> findByMembersNotContaining(String userId);
     Optional<Group> findOptionalByIdAndAdminsContaining(String id, String userId);
+    Optional<Group> findOptionalByIdAndMembersContaining(String id, String userId);
 }
