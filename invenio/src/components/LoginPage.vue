@@ -3,6 +3,7 @@
     <div class="overlay">
       <div class="dialog">
         <div class="form-group" v-if="!this.isRegistrationVisible">
+          <h1>Invenio</h1>
           <label for="name" class="mt-3">Username</label>
           <input type="text" class="form-control" id="name" placeholder="Username" v-model="name">
           <label for="password" class="mt-3">Password</label>
@@ -96,5 +97,11 @@ export default {
 }
 .error {
   color: red;
+}
+.overlay {
+  background-color: var(--accent-color);
+}
+h1 {
+  color: var(--main-dark-color);
 }
 </style>
